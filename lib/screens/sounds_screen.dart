@@ -1,0 +1,326 @@
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import '../constants/app_colors.dart';
+import '../models/animal.dart';
+
+class _Round {
+  final Animal correct;
+  final List<Animal> options;
+
+  _Round({required this.correct, required this.options});
+
+  factory _Round.random() {
+    final shuffled = List<Animal>.from(allAnimals)..shuffle();
+    final correct = shuffled[0];
+    final options = [correct, ...shuffled.skip(1).take(3)]..shuffle();
+    return _Round(correct: correct, options: options);
+  }
+}
+
+class SoundsScreen extends StatefulWidget {
+  const SoundsScreen({super.key});
+
+  @override
+  State<SoundsScreen> createState() => _SoundsScreenState();
+}
+
+class _SoundsScreenState extends State<SoundsScreen>
+    with SingleTickerProviderStateMixin {
+  static const int total = 8;
+  late _Round round;
+  int qNum = 0;
+  int score = 0;
+  String? answered;
+  bool isFinished = false;
+  bool showAnimal = false;
+
+  late AnimationController _pulseController;
+  late Animation<double> _pulseAnim;
+
+  @override
+  void initState() {
+    super.initState();
+    round = _Round.random();
+    _pulseController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 600),
+    )..repeat(reverse: true);
+    _pulseAnim = Tween<double>(begin: 1.0, end: 1.15).animate(
+      CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
+    );
+  }
+
+  @override
+  void dispose() {
+    _pulseController.dispose();
+    super.dispose();
+  }
+
+  void _handleAnswer(String animalId) {
+    if (answered != null) return;
+    final correct = animalId == round.correct.id;
+    setState(() {
+      answered = animalId;
+      if (correct) score++;
+    });
+
+    Timer(const Duration(milliseconds: 1200), () {
+      if (!mounted) return;
+      if (qNum + 1 >= total) {
+        setState(() => isFinished = true);
+      } else {
+        setState(() {
+          qNum++;
+          round = _Round.random();
+          answered = null;
+          showAnimal = false;
+          _pulseController.repeat(reverse: true);
+        });
+      }
+    });
+  }
+
+  void _restart() {
+    setState(() {
+      qNum = 0;
+      score = 0;
+      answered = null;
+      isFinished = false;
+      showAnimal = false;
+      round = _Round.random();
+      _pulseController.repeat(reverse: true);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    final stars = score >= 6 ? 3 : score >= 4 ? 2 : score >= 2 ? 1 : 0;
+
+    return Scaffold(
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [Color(0xFFFBE9E7), Color(0xFFFFCCBC), Color(0xFFFF8A65)],
+          ),
+        ),
+        child: SafeArea(
+          child: Stack(
+            children: [
+              Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
+                    child: Row(
+                      children: [
+                        _CircleBtn(onTap: () => Navigator.pop(context)),
+                        Expanded(
+                          child: Text('Animal Sounds', textAlign: TextAlign.center,
+                            style: GoogleFonts.nunito(fontSize: 24, fontWeight: FontWeight.w800, color: const Color(0xFFBF360C))),
+                        ),
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          decoration: BoxDecoration(color: Colors.white.withOpacity(0.5), borderRadius: BorderRadius.circular(16)),
+                          child: Row(children: [
+                            const Icon(Icons.star_rounded, color: AppColors.orange, size: 16),
+                            const SizedBox(width: 4),
+                            Text('$score', style: GoogleFonts.nunito(fontWeight: FontWeight.w700, color: AppColors.orange, fontSize: 16)),
+                          ]),
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(4),
+                      child: LinearProgressIndicator(
+                        value: qNum / total,
+                        backgroundColor: Colors.white.withOpacity(0.4),
+                        valueColor: const AlwaysStoppedAnimation(AppColors.orange),
+                        minHeight: 8,
+                      ),
+                    ),
+                  ),
+
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                    child: Text(
+                      showAnimal ? 'Is this the animal?' : 'What animal makes this sound?',
+                      textAlign: TextAlign.center,
+                      style: GoogleFonts.nunito(fontSize: 22, fontWeight: FontWeight.w800, color: const Color(0xFFBF360C)),
+                    ),
+                  ),
+
+                  Container(
+                    width: size.width * 0.72,
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(28),
+                      boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.12), blurRadius: 12, offset: const Offset(0, 6))],
+                    ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (showAnimal)
+                          Image.asset(round.correct.imagePath, width: 130, height: 130, fit: BoxFit.contain)
+                        else
+                          AnimatedBuilder(
+                            animation: _pulseAnim,
+                            builder: (_, __) => Transform.scale(
+                              scale: _pulseAnim.value,
+                              child: Container(
+                                width: 100, height: 100,
+                                decoration: const BoxDecoration(
+                                  color: Color(0xFFFBE9E7),
+                                  shape: BoxShape.circle,
+                                ),
+                                child: const Icon(Icons.volume_up_rounded, size: 52, color: AppColors.orange),
+                              ),
+                            ),
+                          ),
+                        const SizedBox(height: 12),
+                        Text(round.correct.sound,
+                          style: GoogleFonts.nunito(fontSize: 22, fontWeight: FontWeight.w800, color: AppColors.orange, fontStyle: FontStyle.italic)),
+                        if (!showAnimal) ...[
+                          const SizedBox(height: 12),
+                          GestureDetector(
+                            onTap: () => setState(() {
+                              showAnimal = true;
+                              _pulseController.stop();
+                            }),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                              decoration: BoxDecoration(color: AppColors.orange, borderRadius: BorderRadius.circular(20)),
+                              child: Row(mainAxisSize: MainAxisSize.min, children: [
+                                const Icon(Icons.visibility_rounded, color: Colors.white, size: 18),
+                                const SizedBox(width: 8),
+                                Text('Show Animal', style: GoogleFonts.nunito(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 15)),
+                              ]),
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 20),
+                      child: Column(
+                        children: round.options.map((animal) {
+                          Color bg = Colors.white;
+                          Color textColor = AppColors.textDark;
+                          Widget? trailing;
+                          if (answered != null) {
+                            if (animal.id == round.correct.id) { bg = AppColors.green; textColor = Colors.white; trailing = const Icon(Icons.check_circle_rounded, color: Colors.white); }
+                            else if (animal.id == answered) { bg = AppColors.red; textColor = Colors.white; }
+                          }
+                          return GestureDetector(
+                            onTap: () => _handleAnswer(animal.id),
+                            child: Container(
+                              margin: const EdgeInsets.only(bottom: 10),
+                              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+                              decoration: BoxDecoration(
+                                color: bg, borderRadius: BorderRadius.circular(18),
+                                boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.08), blurRadius: 6, offset: const Offset(0, 2))],
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(animal.nameId, style: GoogleFonts.nunito(fontSize: 18, fontWeight: FontWeight.w700, color: textColor)),
+                                  if (trailing != null) trailing,
+                                ],
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+
+              if (isFinished)
+                Container(
+                  color: Colors.black54,
+                  child: Center(
+                    child: Container(
+                      margin: const EdgeInsets.all(32),
+                      padding: const EdgeInsets.all(32),
+                      decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.circular(28)),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text('${'⭐' * stars}${'☆' * (3 - stars)}', style: const TextStyle(fontSize: 40)),
+                          const SizedBox(height: 8),
+                          Text(
+                            score >= 6 ? 'Superstar!' : score >= 4 ? 'Good ears!' : 'Keep listening!',
+                            style: GoogleFonts.nunito(fontSize: 28, fontWeight: FontWeight.w900, color: AppColors.orange),
+                          ),
+                          const SizedBox(height: 4),
+                          Text('$score / $total Correct', style: GoogleFonts.nunito(fontSize: 18, color: AppColors.textGrey)),
+                          const SizedBox(height: 24),
+                          _FullBtn(label: 'Play Again', color: AppColors.orange, onTap: _restart),
+                          TextButton(
+                            onPressed: () => Navigator.pop(context),
+                            child: Text('Back to Menu', style: GoogleFonts.nunito(color: AppColors.textGrey, fontSize: 15)),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _CircleBtn extends StatelessWidget {
+  final VoidCallback onTap;
+  const _CircleBtn({required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: 38, height: 38,
+        decoration: BoxDecoration(color: Colors.white.withOpacity(0.5), shape: BoxShape.circle),
+        child: Icon(Icons.arrow_back_rounded, color: AppColors.orange, size: 22),
+      ),
+    );
+  }
+}
+
+class _FullBtn extends StatelessWidget {
+  final String label;
+  final Color color;
+  final VoidCallback onTap;
+  const _FullBtn({required this.label, required this.color, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(vertical: 14),
+        margin: const EdgeInsets.only(bottom: 8),
+        decoration: BoxDecoration(color: color, borderRadius: BorderRadius.circular(30)),
+        child: Text(label, textAlign: TextAlign.center,
+          style: GoogleFonts.nunito(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 18)),
+      ),
+    );
+  }
+}
