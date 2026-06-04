@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:audioplayers/audioplayers.dart';
 import '../constants/app_colors.dart';
 import '../models/animal.dart';
 
@@ -25,40 +26,39 @@ class SoundsScreen extends StatefulWidget {
   State<SoundsScreen> createState() => _SoundsScreenState();
 }
 
-class _SoundsScreenState extends State<SoundsScreen>
-    with SingleTickerProviderStateMixin {
+class _SoundsScreenState extends State<SoundsScreen> {
   static const int total = 8;
   late _Round round;
   int qNum = 0;
   int score = 0;
   String? answered;
   bool isFinished = false;
-  bool showAnimal = false;
 
-  late AnimationController _pulseController;
-  late Animation<double> _pulseAnim;
+  final AudioPlayer _audioPlayer = AudioPlayer();
 
   @override
   void initState() {
     super.initState();
     round = _Round.random();
-    _pulseController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 600),
-    )..repeat(reverse: true);
-    _pulseAnim = Tween<double>(begin: 1.0, end: 1.15).animate(
-      CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
-    );
+  }
+
+  void _playSound() async {
+    await _audioPlayer.stop();
+    await _audioPlayer.setReleaseMode(ReleaseMode.stop);
+    await _audioPlayer.play(AssetSource(round.correct.audioPath));
   }
 
   @override
   void dispose() {
-    _pulseController.dispose();
+    _audioPlayer.dispose();
     super.dispose();
   }
 
   void _handleAnswer(String animalId) {
     if (answered != null) return;
+
+    _audioPlayer.stop();
+
     final correct = animalId == round.correct.id;
     setState(() {
       answered = animalId;
@@ -74,8 +74,6 @@ class _SoundsScreenState extends State<SoundsScreen>
           qNum++;
           round = _Round.random();
           answered = null;
-          showAnimal = false;
-          _pulseController.repeat(reverse: true);
         });
       }
     });
@@ -87,9 +85,7 @@ class _SoundsScreenState extends State<SoundsScreen>
       score = 0;
       answered = null;
       isFinished = false;
-      showAnimal = false;
       round = _Round.random();
-      _pulseController.repeat(reverse: true);
     });
   }
 
@@ -150,7 +146,7 @@ class _SoundsScreenState extends State<SoundsScreen>
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                     child: Text(
-                      showAnimal ? 'Is this the animal?' : 'What animal makes this sound?',
+                      'Listen to the sound!',
                       textAlign: TextAlign.center,
                       style: GoogleFonts.nunito(fontSize: 22, fontWeight: FontWeight.w800, color: const Color(0xFFBF360C)),
                     ),
@@ -167,44 +163,23 @@ class _SoundsScreenState extends State<SoundsScreen>
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        if (showAnimal)
-                          Image.asset(round.correct.imagePath, width: 130, height: 130, fit: BoxFit.contain)
-                        else
-                          AnimatedBuilder(
-                            animation: _pulseAnim,
-                            builder: (_, __) => Transform.scale(
-                              scale: _pulseAnim.value,
-                              child: Container(
-                                width: 100, height: 100,
-                                decoration: const BoxDecoration(
-                                  color: Color(0xFFFBE9E7),
-                                  shape: BoxShape.circle,
-                                ),
-                                child: const Icon(Icons.volume_up_rounded, size: 52, color: AppColors.orange),
-                              ),
-                            ),
-                          ),
+                        Image.asset(round.correct.imagePath, width: 130, height: 130, fit: BoxFit.contain),
                         const SizedBox(height: 12),
                         Text(round.correct.sound,
                           style: GoogleFonts.nunito(fontSize: 22, fontWeight: FontWeight.w800, color: AppColors.orange, fontStyle: FontStyle.italic)),
-                        if (!showAnimal) ...[
-                          const SizedBox(height: 12),
-                          GestureDetector(
-                            onTap: () => setState(() {
-                              showAnimal = true;
-                              _pulseController.stop();
-                            }),
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-                              decoration: BoxDecoration(color: AppColors.orange, borderRadius: BorderRadius.circular(20)),
-                              child: Row(mainAxisSize: MainAxisSize.min, children: [
-                                const Icon(Icons.visibility_rounded, color: Colors.white, size: 18),
-                                const SizedBox(width: 8),
-                                Text('Show Animal', style: GoogleFonts.nunito(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 15)),
-                              ]),
-                            ),
+                        const SizedBox(height: 16),
+                        GestureDetector(
+                          onTap: _playSound,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                            decoration: BoxDecoration(color: AppColors.orange, borderRadius: BorderRadius.circular(20)),
+                            child: Row(mainAxisSize: MainAxisSize.min, children: [
+                              const Icon(Icons.volume_up_rounded, color: Colors.white, size: 20),
+                              const SizedBox(width: 8),
+                              Text('Play Sound', style: GoogleFonts.nunito(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 16)),
+                            ]),
                           ),
-                        ],
+                        ),
                       ],
                     ),
                   ),

@@ -7,6 +7,7 @@ class Animal {
   final String imagePath;
   final Color color;
   final String sound;
+  final String audioPath;
 
   const Animal({
     required this.id,
@@ -15,6 +16,7 @@ class Animal {
     required this.imagePath,
     required this.color,
     required this.sound,
+    required this.audioPath,
   });
 }
 
@@ -26,6 +28,7 @@ const List<Animal> allAnimals = [
     imagePath: 'assets/images/lion.png',
     color: Color(0xFFFFA726),
     sound: 'Roar!',
+    audioPath: 'audio/singa.mp3',
   ),
   Animal(
     id: 'elephant',
@@ -34,22 +37,25 @@ const List<Animal> allAnimals = [
     imagePath: 'assets/images/elephant.png',
     color: Color(0xFF90A4AE),
     sound: 'Trumpet!',
+    audioPath: 'audio/gajah.mp3',
   ),
   Animal(
-    id: 'giraffe',
-    name: 'Giraffe',
-    nameId: 'Jerapah',
-    imagePath: 'assets/images/giraffe.png',
-    color: Color(0xFFFFD54F),
-    sound: 'Hmm!',
+    id: 'kambing',
+    name: 'Goat',
+    nameId: 'Kambing',
+    imagePath: 'assets/images/Kambing.png',
+    color: Color(0xFFBCAAA4),
+    sound: 'Mbee!',
+    audioPath: 'audio/kambing.mp3',
   ),
   Animal(
-    id: 'panda',
-    name: 'Panda',
-    nameId: 'Panda',
-    imagePath: 'assets/images/panda.png',
-    color: Color(0xFF78909C),
-    sound: 'Squeak!',
+    id: 'merak',
+    name: 'Peacock',
+    nameId: 'Merak',
+    imagePath: 'assets/images/Merak.png',
+    color: Color(0xFF26A69A),
+    sound: 'Kwak!',
+    audioPath: 'audio/merak.mp3',
   ),
   Animal(
     id: 'monkey',
@@ -58,22 +64,25 @@ const List<Animal> allAnimals = [
     imagePath: 'assets/images/monkey.png',
     color: Color(0xFFA1887F),
     sound: 'Ooh ooh!',
+    audioPath: 'audio/monyet.mp3',
   ),
   Animal(
-    id: 'fox',
-    name: 'Fox',
-    nameId: 'Rubah',
-    imagePath: 'assets/images/fox.png',
-    color: Color(0xFFFF7043),
-    sound: 'Yap!',
+    id: 'ayam',
+    name: 'Chicken',
+    nameId: 'Ayam',
+    imagePath: 'assets/images/Ayam.png',
+    color: Color(0xFFEF5350),
+    sound: 'Kukuruyuk!',
+    audioPath: 'audio/ayam.mp3',
   ),
   Animal(
-    id: 'rabbit',
-    name: 'Rabbit',
-    nameId: 'Kelinci',
-    imagePath: 'assets/images/rabbit.png',
-    color: Color(0xFFCE93D8),
-    sound: 'Squeak!',
+    id: 'katak',
+    name: 'Frog',
+    nameId: 'Katak',
+    imagePath: 'assets/images/Katak.png',
+    color: Color(0xFF66BB6A),
+    sound: 'Koak koak!',
+    audioPath: 'audio/katak.mp3',
   ),
   Animal(
     id: 'tiger',
@@ -81,6 +90,7 @@ const List<Animal> allAnimals = [
     nameId: 'Harimau',
     imagePath: 'assets/images/tiger.png',
     color: Color(0xFFFF8F00),
-    sound: 'Roar!',
+    sound: 'Ambatukam!',
+    audioPath: 'audio/ambatukam.mp3',
   ),
 ];
