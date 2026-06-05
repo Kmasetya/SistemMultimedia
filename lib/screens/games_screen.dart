@@ -7,6 +7,7 @@ import 'memory_game.dart';
 import 'quiz_screen.dart';
 import 'count_screen.dart';
 import 'sounds_screen.dart';
+import 'spelling_screen.dart';
 
 class _GameInfo {
   final String title;
@@ -58,6 +59,14 @@ final _games = [
     color: AppColors.orange,
     bgLight: const Color(0xFFFBE9E7),
     screenBuilder: () => const SoundsScreen(),
+  ),
+  _GameInfo(
+    title: 'Spell Animal',
+    subtitle: 'Spell the name!',
+    icon: Icons.abc_rounded,
+    color: const Color(0xFF1565C0), // Blue
+    bgLight: const Color(0xFFE3F2FD), // Light Blue
+    screenBuilder: () => const SpellingScreen(),
   ),
 ];
 
