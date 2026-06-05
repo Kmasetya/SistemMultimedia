@@ -56,22 +56,6 @@ class _SpellingScreenState extends State<SpellingScreen> {
     currentIndex = 0;
   }
 
-  // Fungsi untuk memutar suara per huruf (misal: a.mp3, b.mp3)
-  void _playLetterSound(String letter) async {
-    final letterLower = letter.toLowerCase();
-    // Path ke file audio huruf (folder letters belum ada, tapi disiapkan kodenya)
-    final path = 'audio/letters/$letterLower.mp3';
-    
-    try {
-      final source = kIsWeb ? UrlSource('assets/$path') : AssetSource(path);
-      await _audioPlayer.stop(); // hentikan suara sebelumnya
-      await _audioPlayer.play(source);
-    } catch (e) {
-      // Abaikan error jika file tidak ditemukan (karena user belum merekam audionya)
-      debugPrint("Audio untuk huruf $letter belum tersedia.");
-    }
-  }
-
   void _playAnimalSound() async {
     final path = currentAnimal.audioPath;
     try {
@@ -91,8 +75,6 @@ class _SpellingScreenState extends State<SpellingScreen> {
 
     if (tappedLetter == expectedLetter) {
       // Benar!
-      _playLetterSound(tappedLetter);
-      
       setState(() {
         letterUsed[index] = true;
         guessedLetters[currentIndex] = tappedLetter;
