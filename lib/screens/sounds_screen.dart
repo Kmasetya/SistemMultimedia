@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:audioplayers/audioplayers.dart';
@@ -43,9 +44,9 @@ class _SoundsScreenState extends State<SoundsScreen> {
   }
 
   void _playSound() async {
-    await _audioPlayer.stop();
-    await _audioPlayer.setReleaseMode(ReleaseMode.stop);
-    await _audioPlayer.play(AssetSource(round.correct.audioPath));
+    final path = round.correct.audioPath;
+    final source = kIsWeb ? UrlSource('assets/$path') : AssetSource(path);
+    await _audioPlayer.play(source);
   }
 
   @override
@@ -163,10 +164,6 @@ class _SoundsScreenState extends State<SoundsScreen> {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Image.asset(round.correct.imagePath, width: 130, height: 130, fit: BoxFit.contain),
-                        const SizedBox(height: 12),
-                        Text(round.correct.sound,
-                          style: GoogleFonts.nunito(fontSize: 22, fontWeight: FontWeight.w800, color: AppColors.orange, fontStyle: FontStyle.italic)),
                         const SizedBox(height: 16),
                         GestureDetector(
                           onTap: _playSound,

@@ -90,7 +90,7 @@ const List<Animal> allAnimals = [
     nameId: 'Harimau',
     imagePath: 'assets/images/tiger.png',
     color: Color(0xFFFF8F00),
-    sound: 'Ambatukam!',
-    audioPath: 'audio/ambatukam.mp3',
+    sound: 'ROAR!!!!',
+    audioPath: 'audio/presiden-goblok.mp3',
   ),
 ];
