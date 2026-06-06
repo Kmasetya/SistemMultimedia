@@ -1,24 +1,33 @@
 import 'package:flutter/material.dart';
 
 class AppColors {
-  static const Color skyTop = Color(0xFF87CEEB);
-  static const Color skyMid = Color(0xFF4DD0E1);
-  static const Color skyBottom = Color(0xFF26C6DA);
+  // Premium, soft sky gradient
+  static const Color skyTop = Color(0xFF5AB9EA);
+  static const Color skyBottom = Color(0xFFE2F3FD);
 
-  static const Color red = Color(0xFFE53935);
-  static const Color yellow = Color(0xFFFFD740);
-  static const Color golden = Color(0xFFFFA726);
-  static const Color green = Color(0xFF43A047);
-  static const Color purple = Color(0xFF7E57C2);
-  static const Color orange = Color(0xFFFF7043);
+  // Solid, vibrant typography colors
+  static const Color textKids = Color(0xFFFF9800);
+  static const Color textGames = Color(0xFF4CAF50);
+
+  // Legacy names kept for compatibility with other screens
+  static const Color red = Color(0xFFF06292); // Softened pinkish-red
+  static const Color yellow = Color(0xFFFFCA28);
+  static const Color golden = Color(0xFFFFB300);
+  static const Color green = Color(0xFF66BB6A);
+  static const Color purple = Color(0xFFBA68C8);
+  static const Color orange = Color(0xFFFFA726);
+
+  // Clean, 3D Play button
+  static const Color playButton = Color(0xFF8BC34A);
+  static const Color playButtonShadow = Color(0xFF558B2F);
 
   static const Color white = Colors.white;
-  static const Color textDark = Color(0xFF1A1A2E);
-  static const Color textGrey = Color(0xFF888888);
+  static const Color textDark = Color(0xFF2C3E50);
+  static const Color textGrey = Color(0xFF7F8C8D);
 
   static const LinearGradient skyGradient = LinearGradient(
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
-    colors: [skyTop, skyMid, skyBottom],
+    colors: [skyTop, skyBottom],
   );
 }

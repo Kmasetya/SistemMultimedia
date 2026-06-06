@@ -21,12 +21,12 @@ class _HomeScreenState extends State<HomeScreen>
   void initState() {
     super.initState();
     _bounceController = AnimationController(
-      duration: const Duration(milliseconds: 1000),
+      duration: const Duration(milliseconds: 1500), // Slower, smoother floating
       vsync: this,
     )..repeat(reverse: true);
 
-    _bounceAnimation = Tween<double>(begin: 0, end: -12).animate(
-      CurvedAnimation(parent: _bounceController, curve: Curves.easeInOut),
+    _bounceAnimation = Tween<double>(begin: 0, end: -10).animate(
+      CurvedAnimation(parent: _bounceController, curve: Curves.easeInOutSine),
     );
   }
 
@@ -51,40 +51,47 @@ class _HomeScreenState extends State<HomeScreen>
                 children: [
                   const SizedBox(height: 16),
 
+                  // Title "Kids" — clean solid color with thick cartoon drop shadow
                   Text(
                     'Kids',
                     style: GoogleFonts.nunito(
-                      fontSize: 72,
+                      fontSize: 76,
+                      height: 1.0,
                       fontWeight: FontWeight.w900,
-                      color: AppColors.red,
-                      shadows: [
-                        Shadow(
-                          color: Colors.black26,
-                          offset: const Offset(2, 3),
-                          blurRadius: 4,
-                        ),
+                      color: AppColors.textKids,
+                      shadows: const [
+                        // Thick solid bottom shadow for 3D effect
+                        Shadow(color: Colors.black26, offset: Offset(0, 6), blurRadius: 0),
+                        // Soft white outline effect using shadows
+                        Shadow(color: Colors.white, offset: Offset(-2, -2), blurRadius: 0),
+                        Shadow(color: Colors.white, offset: Offset(2, -2), blurRadius: 0),
+                        Shadow(color: Colors.white, offset: Offset(-2, 2), blurRadius: 0),
+                        Shadow(color: Colors.white, offset: Offset(2, 2), blurRadius: 0),
                       ],
                     ),
-                  ).animate().fadeIn(duration: 600.ms).slideY(begin: -0.3),
+                  ).animate().fadeIn(duration: 600.ms).slideY(begin: -0.2),
 
+                  // Title "Games"
                   Text(
                     'Games',
                     style: GoogleFonts.nunito(
-                      fontSize: 46,
-                      fontWeight: FontWeight.w800,
-                      color: AppColors.yellow,
-                      shadows: [
-                        Shadow(
-                          color: Colors.black26,
-                          offset: const Offset(2, 2),
-                          blurRadius: 3,
-                        ),
+                      fontSize: 48,
+                      height: 1.0,
+                      fontWeight: FontWeight.w900,
+                      color: AppColors.textGames,
+                      shadows: const [
+                        Shadow(color: Colors.black26, offset: Offset(0, 4), blurRadius: 0),
+                        Shadow(color: Colors.white, offset: Offset(-1.5, -1.5), blurRadius: 0),
+                        Shadow(color: Colors.white, offset: Offset(1.5, -1.5), blurRadius: 0),
+                        Shadow(color: Colors.white, offset: Offset(-1.5, 1.5), blurRadius: 0),
+                        Shadow(color: Colors.white, offset: Offset(1.5, 1.5), blurRadius: 0),
                       ],
                     ),
                   ).animate().fadeIn(duration: 600.ms, delay: 100.ms),
 
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 32),
 
+                  // Animal image — simple, clean, premium rounded border
                   AnimatedBuilder(
                     animation: _bounceAnimation,
                     builder: (context, child) {
@@ -97,51 +104,41 @@ class _HomeScreenState extends State<HomeScreen>
                       width: imageSize,
                       height: imageSize,
                       decoration: BoxDecoration(
-                        color: AppColors.golden,
-                        borderRadius: BorderRadius.circular(32),
-                        boxShadow: [
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(36),
+                        boxShadow: const [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.25),
-                            blurRadius: 16,
-                            offset: const Offset(0, 8),
+                            color: Colors.black12,
+                            blurRadius: 20,
+                            offset: Offset(0, 10),
                           ),
                         ],
                       ),
+                      padding: const EdgeInsets.all(8), // White border thickness
                       child: ClipRRect(
-                        borderRadius: BorderRadius.circular(32),
-                        child: Image.asset(
-                          'assets/images/animals-hero.png',
-                          fit: BoxFit.cover,
+                        borderRadius: BorderRadius.circular(28),
+                        child: Container(
+                          color: const Color(0xFFFFF9E6), // Soft warm background behind animals
+                          child: Image.asset(
+                            'assets/images/animals-hero.png',
+                            fit: BoxFit.cover,
+                          ),
                         ),
                       ),
                     ),
                   ).animate().fadeIn(duration: 800.ms, delay: 200.ms),
 
-                  const SizedBox(height: 36),
+                  const SizedBox(height: 48),
 
+                  // Simple, clean, pill-shaped Play button
                   _PlayButton(
                     onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(builder: (_) => const GamesScreen()),
                     ),
-                  ).animate().fadeIn(delay: 400.ms).scale(begin: const Offset(0.8, 0.8)),
+                  ).animate().fadeIn(delay: 400.ms).scale(begin: const Offset(0.9, 0.9)),
 
                   const SizedBox(height: 16),
-
-                  Text(
-                    'Fun Animal Games for Kids!',
-                    style: GoogleFonts.nunito(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white.withOpacity(0.9),
-                      shadows: [
-                        Shadow(
-                          color: Colors.black26,
-                          offset: const Offset(1, 1),
-                        ),
-                      ],
-                    ),
-                  ).animate().fadeIn(delay: 500.ms),
                 ],
               ),
             ),
@@ -169,11 +166,11 @@ class _PlayButtonState extends State<_PlayButton>
   void initState() {
     super.initState();
     _pulseController = AnimationController(
-      duration: const Duration(milliseconds: 700),
+      duration: const Duration(milliseconds: 1000), // Slower, elegant pulse
       vsync: this,
     )..repeat(reverse: true);
-    _pulseAnimation = Tween<double>(begin: 1.0, end: 1.06).animate(
-      CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
+    _pulseAnimation = Tween<double>(begin: 1.0, end: 1.04).animate(
+      CurvedAnimation(parent: _pulseController, curve: Curves.easeInOutSine),
     );
   }
 
@@ -194,29 +191,43 @@ class _PlayButtonState extends State<_PlayButton>
       child: GestureDetector(
         onTap: widget.onTap,
         child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 52, vertical: 18),
+          padding: const EdgeInsets.symmetric(horizontal: 48, vertical: 16),
           decoration: BoxDecoration(
-            color: AppColors.red,
-            borderRadius: BorderRadius.circular(50),
-            boxShadow: [
+            color: AppColors.playButton,
+            borderRadius: BorderRadius.circular(100), // Perfect pill shape
+            border: const Border(
+              bottom: BorderSide(
+                color: AppColors.playButtonShadow,
+                width: 6, // Thick 3D bottom border
+              ),
+            ),
+            boxShadow: const [
               BoxShadow(
-                color: const Color(0xFFB71C1C).withOpacity(0.45),
+                color: Colors.black26,
                 blurRadius: 10,
-                offset: const Offset(0, 6),
+                offset: Offset(0, 4),
               ),
             ],
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const Icon(Icons.play_arrow_rounded, color: Colors.white, size: 32),
-              const SizedBox(width: 10),
+              const Icon(Icons.play_arrow_rounded, color: Colors.white, size: 36),
+              const SizedBox(width: 8),
               Text(
                 'Play',
                 style: GoogleFonts.nunito(
-                  fontSize: 28,
-                  fontWeight: FontWeight.w800,
+                  fontSize: 32,
+                  height: 1.0,
+                  fontWeight: FontWeight.w900,
                   color: Colors.white,
+                  shadows: const [
+                    Shadow(
+                      color: AppColors.playButtonShadow,
+                      offset: Offset(0, 2),
+                      blurRadius: 0,
+                    ),
+                  ],
                 ),
               ),
             ],
