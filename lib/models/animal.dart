@@ -91,6 +91,6 @@ const List<Animal> allAnimals = [
     imagePath: 'assets/images/tiger.png',
     color: Color(0xFFFF8F00),
     sound: 'ROAR!!!!',
-    audioPath: 'audio/presiden-goblok.mp3',
+    audioPath: 'audio/singa.mp3',
   ),
 ];
