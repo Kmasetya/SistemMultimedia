@@ -53,7 +53,7 @@ class _HomeScreenState extends State<HomeScreen>
 
                   // Title "Kids" — clean solid color with thick cartoon drop shadow
                   Text(
-                    'Kids',
+                    'Animals',
                     style: GoogleFonts.nunito(
                       fontSize: 76,
                       height: 1.0,
