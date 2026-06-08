@@ -36,21 +36,31 @@ class _SoundsScreenState extends State<SoundsScreen> {
   bool isFinished = false;
 
   final AudioPlayer _audioPlayer = AudioPlayer();
+  Timer? _nextRoundTimer;
 
   @override
   void initState() {
     super.initState();
+    _audioPlayer.setReleaseMode(ReleaseMode.stop);
     round = _Round.random();
   }
 
   void _playSound() async {
-    final path = round.correct.audioPath;
-    final source = kIsWeb ? UrlSource('assets/$path') : AssetSource(path);
-    await _audioPlayer.play(source);
+    try {
+      // Always stop & release previous sound before playing new one
+      await _audioPlayer.stop();
+      final path = round.correct.audioPath;
+      final source = kIsWeb ? UrlSource('assets/$path') : AssetSource(path);
+      await _audioPlayer.play(source);
+    } catch (e) {
+      debugPrint('Error playing sound: $e');
+    }
   }
 
   @override
   void dispose() {
+    _nextRoundTimer?.cancel();
+    _audioPlayer.stop();
     _audioPlayer.dispose();
     super.dispose();
   }
@@ -66,8 +76,10 @@ class _SoundsScreenState extends State<SoundsScreen> {
       if (correct) score++;
     });
 
-    Timer(const Duration(milliseconds: 1200), () {
+    _nextRoundTimer?.cancel();
+    _nextRoundTimer = Timer(const Duration(milliseconds: 1200), () {
       if (!mounted) return;
+      _audioPlayer.stop(); // Ensure audio is fully stopped before next round
       if (qNum + 1 >= total) {
         setState(() => isFinished = true);
       } else {
@@ -81,6 +93,8 @@ class _SoundsScreenState extends State<SoundsScreen> {
   }
 
   void _restart() {
+    _nextRoundTimer?.cancel();
+    _audioPlayer.stop();
     setState(() {
       qNum = 0;
       score = 0;
@@ -113,7 +127,10 @@ class _SoundsScreenState extends State<SoundsScreen> {
                     padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
                     child: Row(
                       children: [
-                        _CircleBtn(onTap: () => Navigator.pop(context)),
+                        _CircleBtn(onTap: () {
+                          _audioPlayer.stop();
+                          Navigator.pop(context);
+                        }),
                         Expanded(
                           child: Text('Animal Sounds', textAlign: TextAlign.center,
                             style: GoogleFonts.nunito(fontSize: 24, fontWeight: FontWeight.w800, color: const Color(0xFFBF360C))),
