@@ -6,6 +6,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../constants/app_colors.dart';
 import '../models/animal.dart';
+import '../services/audio_manager.dart';
 
 class SpellingScreen extends StatefulWidget {
   const SpellingScreen({super.key});
@@ -75,6 +76,7 @@ class _SpellingScreenState extends State<SpellingScreen> {
 
     if (tappedLetter == expectedLetter) {
       // Benar!
+      AudioManager().playCorrect();
       setState(() {
         letterUsed[index] = true;
         guessedLetters[currentIndex] = tappedLetter;
@@ -90,6 +92,7 @@ class _SpellingScreenState extends State<SpellingScreen> {
           if (!mounted) return;
           if (qNum + 1 >= total) {
             setState(() => isFinished = true);
+            AudioManager().playWin();
           } else {
             setState(() {
               qNum++;
@@ -99,8 +102,8 @@ class _SpellingScreenState extends State<SpellingScreen> {
         });
       }
     } else {
-      // Salah ketuk, getarkan layar atau tidak lakukan apa-apa
-      // Bisa tambahkan efek suara "tetot" nanti
+      // Salah ketuk
+      AudioManager().playWrong();
     }
   }
 

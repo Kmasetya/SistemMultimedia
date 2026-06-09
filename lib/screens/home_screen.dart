@@ -3,6 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../widgets/sky_background.dart';
 import '../constants/app_colors.dart';
+import '../services/audio_manager.dart';
 import 'games_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -44,10 +45,12 @@ class _HomeScreenState extends State<HomeScreen>
     return Scaffold(
       body: SkyBackground(
         child: SafeArea(
-          child: Center(
-            child: SingleChildScrollView(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+          child: Stack(
+            children: [
+              Center(
+                child: SingleChildScrollView(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const SizedBox(height: 16),
 
@@ -143,6 +146,15 @@ class _HomeScreenState extends State<HomeScreen>
               ),
             ),
           ),
+          
+          // Volume Control at top right
+          Positioned(
+            top: 16,
+            right: 16,
+            child: _VolumeControl(),
+          ),
+        ],
+      ),
         ),
       ),
     );
@@ -233,6 +245,43 @@ class _PlayButtonState extends State<_PlayButton>
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class _VolumeControl extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      decoration: BoxDecoration(
+        color: Colors.white.withOpacity(0.5),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const Icon(Icons.volume_up_rounded, color: AppColors.textDark, size: 20),
+          SizedBox(
+            width: 80,
+            child: ValueListenableBuilder<double>(
+              valueListenable: AudioManager().bgmVolume,
+              builder: (context, vol, child) {
+                return Slider(
+                  value: vol,
+                  min: 0.0,
+                  max: 1.0,
+                  activeColor: AppColors.textDark,
+                  inactiveColor: Colors.white,
+                  onChanged: (newVol) {
+                    AudioManager().bgmVolume.value = newVol;
+                  },
+                );
+              },
+            ),
+          ),
+        ],
       ),
     );
   }

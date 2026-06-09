@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import '../services/audio_manager.dart';
 import 'memory_game.dart';
 import 'quiz_screen.dart';
 import 'count_screen.dart';
@@ -354,6 +355,7 @@ class _GameCardState extends State<_GameCard>
 
   // ── Press down ──
   void _onTapDown(TapDownDetails d) {
+    AudioManager().playTap();
     setState(() => _pressed = true);
 
     // Play bounce & emoji jump

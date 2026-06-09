@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../constants/app_colors.dart';
 import '../models/animal.dart';
+import '../services/audio_manager.dart';
 
 class _CardData {
   final String id;
@@ -50,10 +51,17 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
     cards = _makeCards();
   }
 
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   void _handleTap(String id) {
     if (isChecking) return;
     final card = cards.firstWhere((c) => c.id == id);
     if (card.isFlipped || card.isMatched) return;
+
+    AudioManager().playTap();
 
     setState(() {
       card.isFlipped = true;
@@ -72,8 +80,14 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
             c1.isMatched = true;
             c2.isMatched = true;
             matches++;
-            if (matches == 8) isWon = true;
+            if (matches == 8) {
+              isWon = true;
+              AudioManager().playWin();
+            } else {
+              AudioManager().playCorrect();
+            }
           } else {
+            AudioManager().playWrong();
             c1.isFlipped = false;
             c2.isFlipped = false;
           }
@@ -118,7 +132,9 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
                         _CircleBtn(
                           icon: Icons.arrow_back_rounded,
                           color: AppColors.purple,
-                          onTap: () => Navigator.pop(context),
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
                         ),
                         Expanded(
                           child: Text(

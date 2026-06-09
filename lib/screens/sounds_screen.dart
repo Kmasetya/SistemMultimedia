@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:audioplayers/audioplayers.dart';
 import '../constants/app_colors.dart';
 import '../models/animal.dart';
+import '../services/audio_manager.dart';
 
 class _Round {
   final Animal correct;
@@ -71,6 +72,13 @@ class _SoundsScreenState extends State<SoundsScreen> {
     _audioPlayer.stop();
 
     final correct = animalId == round.correct.id;
+    
+    if (correct) {
+      AudioManager().playCorrect();
+    } else {
+      AudioManager().playWrong();
+    }
+
     setState(() {
       answered = animalId;
       if (correct) score++;
@@ -82,6 +90,7 @@ class _SoundsScreenState extends State<SoundsScreen> {
       _audioPlayer.stop(); // Ensure audio is fully stopped before next round
       if (qNum + 1 >= total) {
         setState(() => isFinished = true);
+        AudioManager().playWin();
       } else {
         setState(() {
           qNum++;

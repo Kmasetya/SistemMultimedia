@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'screens/home_screen.dart';
+import 'services/audio_manager.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  // Initialize Background Music
+  AudioManager().initBgm();
 
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../constants/app_colors.dart';
 import '../models/animal.dart';
+import '../services/audio_manager.dart';
 
 class _Question {
   final Animal correct;
@@ -42,6 +43,13 @@ class _QuizScreenState extends State<QuizScreen> {
   void _handleAnswer(String animalId) {
     if (answered != null) return;
     final correct = animalId == question.correct.id;
+    
+    if (correct) {
+      AudioManager().playCorrect();
+    } else {
+      AudioManager().playWrong();
+    }
+
     setState(() {
       answered = animalId;
       if (correct) score++;
@@ -51,6 +59,7 @@ class _QuizScreenState extends State<QuizScreen> {
       if (!mounted) return;
       if (qNum + 1 >= total) {
         setState(() => isFinished = true);
+        AudioManager().playWin();
       } else {
         setState(() {
           qNum++;

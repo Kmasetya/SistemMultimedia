@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../constants/app_colors.dart';
 import '../models/animal.dart';
+import '../services/audio_manager.dart';
 
 class _Round {
   final Animal animal;
@@ -43,6 +44,13 @@ class _CountScreenState extends State<CountScreen> {
   void _handleAnswer(int num) {
     if (selected != null) return;
     final correct = num == round.count;
+    
+    if (correct) {
+      AudioManager().playCorrect();
+    } else {
+      AudioManager().playWrong();
+    }
+
     setState(() {
       selected = num;
       if (correct) score++;
@@ -52,6 +60,7 @@ class _CountScreenState extends State<CountScreen> {
       if (!mounted) return;
       if (qNum + 1 >= total) {
         setState(() => isFinished = true);
+        AudioManager().playWin();
       } else {
         setState(() {
           qNum++;
