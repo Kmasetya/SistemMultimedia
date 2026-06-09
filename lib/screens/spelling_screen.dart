@@ -146,7 +146,7 @@ class _SpellingScreenState extends State<SpellingScreen> {
                     padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
                     child: Row(
                       children: [
-                        _CircleBtn(onTap: () => Navigator.pop(context)),
+                        _CircleBtn(onTap: () => Navigator.pop(context, score)),
                         Expanded(
                           child: Text('Spelling Game', textAlign: TextAlign.center,
                             style: GoogleFonts.nunito(fontSize: 24, fontWeight: FontWeight.w800, color: const Color(0xFF1565C0))),
@@ -290,7 +290,7 @@ class _SpellingScreenState extends State<SpellingScreen> {
                           const SizedBox(height: 24),
                           _FullBtn(label: 'Main Lagi', color: const Color(0xFF1565C0), onTap: _restart),
                           TextButton(
-                            onPressed: () => Navigator.pop(context),
+                            onPressed: () => Navigator.pop(context, score),
                             child: Text('Kembali ke Menu', style: GoogleFonts.nunito(color: Colors.grey[600], fontSize: 16, fontWeight: FontWeight.w700)),
                           ),
                         ],

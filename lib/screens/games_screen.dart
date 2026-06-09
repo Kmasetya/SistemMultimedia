@@ -123,19 +123,23 @@ class _GamesScreenState extends State<GamesScreen>
     super.dispose();
   }
 
-  void _onPlay(_GameItem game) {
-    setState(() {
-      _stars += 10;
-      _starPop = true;
-    });
-    Future.delayed(const Duration(milliseconds: 350), () {
-      if (mounted) setState(() => _starPop = false);
-    });
-
-    Navigator.push(
+  void _onPlay(_GameItem game) async {
+    final result = await Navigator.push<int>(
       context,
       MaterialPageRoute(builder: (_) => game.screenBuilder()),
     );
+
+    if (!mounted) return;
+    final earned = result ?? 0;
+    if (earned > 0) {
+      setState(() {
+        _stars += earned;
+        _starPop = true;
+      });
+      Future.delayed(const Duration(milliseconds: 350), () {
+        if (mounted) setState(() => _starPop = false);
+      });
+    }
   }
 
   @override
