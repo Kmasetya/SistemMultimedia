@@ -11,7 +11,7 @@ import 'spelling_screen.dart';
 //  Model
 // ─────────────────────────────────────────────
 class _GameItem {
-  final String emoji;
+  final String imagePath;
   final String title;
   final String subtitle;
   final Color color;
@@ -19,7 +19,7 @@ class _GameItem {
   final Widget Function() screenBuilder;
 
   const _GameItem({
-    required this.emoji,
+    required this.imagePath,
     required this.title,
     required this.subtitle,
     required this.color,
@@ -30,7 +30,7 @@ class _GameItem {
 
 final List<_GameItem> _kGames = [
   _GameItem(
-    emoji: '🧠',
+    imagePath: 'assets/images/memory.png',
     title: 'Memory Game',
     subtitle: 'Find the pairs!',
     color: const Color(0xFF862DCB),
@@ -38,7 +38,7 @@ final List<_GameItem> _kGames = [
     screenBuilder: () => const MemoryGameScreen(),
   ),
   _GameItem(
-    emoji: '🦁',
+    imagePath: 'assets/images/quiz.png',
     title: 'Animal Quiz',
     subtitle: 'Name the animal!',
     color: const Color(0xFFB60E3D),
@@ -46,7 +46,7 @@ final List<_GameItem> _kGames = [
     screenBuilder: () => const QuizScreen(),
   ),
   _GameItem(
-    emoji: '🔢',
+    imagePath: 'assets/images/count.png',
     title: 'Count Animals',
     subtitle: 'How many can you see?',
     color: const Color(0xFF006780),
@@ -54,7 +54,7 @@ final List<_GameItem> _kGames = [
     screenBuilder: () => const CountScreen(),
   ),
   _GameItem(
-    emoji: '🔊',
+    imagePath: 'assets/images/sounds.png',
     title: 'Animal Sounds',
     subtitle: 'Listen and guess!',
     color: const Color(0xFFDA3054),
@@ -62,7 +62,7 @@ final List<_GameItem> _kGames = [
     screenBuilder: () => const SoundsScreen(),
   ),
   _GameItem(
-    emoji: '✏️',
+    imagePath: 'assets/images/spell.png',
     title: 'Spell Animal',
     subtitle: 'Spell the name!',
     color: const Color(0xFF004E61),
@@ -477,12 +477,13 @@ class _GameCardState extends State<_GameCard>
                                               : [],
                                         ),
                                         alignment: Alignment.center,
-                                        child: AnimatedDefaultTextStyle(
-                                          duration: const Duration(milliseconds: 200),
-                                          style: TextStyle(
-                                            fontSize: _pressed ? 48 : 42,
+                                        child: ClipOval(
+                                          child: Image.asset(
+                                            widget.game.imagePath,
+                                            width: 60,
+                                            height: 60,
+                                            fit: BoxFit.cover,
                                           ),
-                                          child: Text(widget.game.emoji),
                                         ),
                                       ),
                                     ),
