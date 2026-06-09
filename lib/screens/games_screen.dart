@@ -359,7 +359,6 @@ class _GameCardState extends State<_GameCard>
 
   // ── Press down ──
   void _onTapDown(TapDownDetails d) {
-    AudioManager().playTap();
     setState(() => _pressed = true);
 
     // Play bounce & emoji jump
