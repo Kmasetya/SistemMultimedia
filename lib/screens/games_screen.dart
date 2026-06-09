@@ -30,7 +30,7 @@ class _GameItem {
 final List<_GameItem> _kGames = [
   _GameItem(
     emoji: '🧠',
-    title: 'Asah Memori Seru!',
+    title: 'Memory Game',
     subtitle: 'Find the pairs!',
     color: const Color(0xFF862DCB),
     iconBg: const Color(0xFFF3EEFF),
