@@ -133,7 +133,7 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
                           icon: Icons.arrow_back_rounded,
                           color: AppColors.purple,
                           onTap: () {
-                            Navigator.pop(context);
+                            Navigator.pop(context, matches);
                           },
                         ),
                         Expanded(
@@ -232,7 +232,7 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
                           const SizedBox(height: 24),
                           _FullBtn(label: 'Play Again', color: AppColors.purple, onTap: _restart),
                           TextButton(
-                            onPressed: () => Navigator.pop(context),
+                            onPressed: () => Navigator.pop(context, matches),
                             child: Text('Back to Menu', style: GoogleFonts.nunito(color: AppColors.textGrey, fontSize: 15)),
                           ),
                         ],

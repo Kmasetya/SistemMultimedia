@@ -138,7 +138,7 @@ class _SoundsScreenState extends State<SoundsScreen> {
                       children: [
                         _CircleBtn(onTap: () {
                           _audioPlayer.stop();
-                          Navigator.pop(context);
+                          Navigator.pop(context, score);
                         }),
                         Expanded(
                           child: Text('Animal Sounds', textAlign: TextAlign.center,
@@ -268,7 +268,7 @@ class _SoundsScreenState extends State<SoundsScreen> {
                           const SizedBox(height: 24),
                           _FullBtn(label: 'Play Again', color: AppColors.orange, onTap: _restart),
                           TextButton(
-                            onPressed: () => Navigator.pop(context),
+                            onPressed: () => Navigator.pop(context, score),
                             child: Text('Back to Menu', style: GoogleFonts.nunito(color: AppColors.textGrey, fontSize: 15)),
                           ),
                         ],

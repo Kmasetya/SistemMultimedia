@@ -102,7 +102,7 @@ class _QuizScreenState extends State<QuizScreen> {
                     padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
                     child: Row(
                       children: [
-                        _CircleBtn(onTap: () => Navigator.pop(context), color: AppColors.red),
+                        _CircleBtn(onTap: () => Navigator.pop(context, score), color: AppColors.red),
                         Expanded(
                           child: Text('Animal Quiz', textAlign: TextAlign.center,
                             style: GoogleFonts.nunito(fontSize: 24, fontWeight: FontWeight.w800, color: const Color(0xFFB71C1C))),
@@ -226,7 +226,7 @@ class _QuizScreenState extends State<QuizScreen> {
                           const SizedBox(height: 24),
                           _FullBtn(label: 'Try Again', color: AppColors.red, onTap: _restart),
                           TextButton(
-                            onPressed: () => Navigator.pop(context),
+                            onPressed: () => Navigator.pop(context, score),
                             child: Text('Back to Menu', style: GoogleFonts.nunito(color: AppColors.textGrey, fontSize: 15)),
                           ),
                         ],
