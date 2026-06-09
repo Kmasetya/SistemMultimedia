@@ -251,16 +251,22 @@ class _GameCard extends StatefulWidget {
 }
 
 class _GameCardState extends State<_GameCard>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   // ── Controller untuk float-in entry ──
   late final AnimationController _entryCtrl;
   late final Animation<double> _entryOpacity;
   late final Animation<Offset> _entrySlide;
 
+  // ── Controller untuk bounce saat tap ──
+  late final AnimationController _bounceCtrl;
+  late final Animation<double> _bounceAnim;
+
+  // ── Controller untuk emoji jump ──
+  late final AnimationController _emojiJumpCtrl;
+  late final Animation<double> _emojiJumpAnim;
+
   // ── State untuk press + tilt ──
   double _rotX = 0, _rotY = 0;
-  double _scale = 1.0;
-  double _translateY = 0.0;
   bool _pressed = false;
 
   // ── Ripple ──
@@ -269,6 +275,8 @@ class _GameCardState extends State<_GameCard>
   @override
   void initState() {
     super.initState();
+
+    // Entry animation
     _entryCtrl = AnimationController(
       vsync: this,
       duration: const Duration(milliseconds: 500),
@@ -285,6 +293,36 @@ class _GameCardState extends State<_GameCard>
       curve: Curves.elasticOut,
     ));
 
+    // Bounce animation (spring effect on tap)
+    _bounceCtrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 500),
+    );
+    _bounceAnim = TweenSequence<double>([
+      TweenSequenceItem(tween: Tween(begin: 1.0, end: 0.92), weight: 20),
+      TweenSequenceItem(tween: Tween(begin: 0.92, end: 1.06), weight: 40),
+      TweenSequenceItem(tween: Tween(begin: 1.06, end: 0.98), weight: 20),
+      TweenSequenceItem(tween: Tween(begin: 0.98, end: 1.0), weight: 20),
+    ]).animate(CurvedAnimation(
+      parent: _bounceCtrl,
+      curve: Curves.easeOut,
+    ));
+
+    // Emoji jump animation
+    _emojiJumpCtrl = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 600),
+    );
+    _emojiJumpAnim = TweenSequence<double>([
+      TweenSequenceItem(tween: Tween(begin: 0, end: -22), weight: 25),
+      TweenSequenceItem(tween: Tween(begin: -22, end: 0), weight: 25),
+      TweenSequenceItem(tween: Tween(begin: 0, end: -10), weight: 25),
+      TweenSequenceItem(tween: Tween(begin: -10, end: 0), weight: 25),
+    ]).animate(CurvedAnimation(
+      parent: _emojiJumpCtrl,
+      curve: Curves.easeOut,
+    ));
+
     // Stagger entry per kartu
     Future.delayed(Duration(milliseconds: 60 * widget.index + 80), () {
       if (mounted) _entryCtrl.forward();
@@ -294,6 +332,8 @@ class _GameCardState extends State<_GameCard>
   @override
   void dispose() {
     _entryCtrl.dispose();
+    _bounceCtrl.dispose();
+    _emojiJumpCtrl.dispose();
     super.dispose();
   }
 
@@ -304,25 +344,22 @@ class _GameCardState extends State<_GameCard>
     setState(() {
       _rotX = (e.localPosition.dy - cy) / 18;
       _rotY = (cx - e.localPosition.dx) / 18;
-      _scale = 1.03;
-      _translateY = -8;
     });
   }
 
   void _onHoverExit() => setState(() {
         _rotX = 0;
         _rotY = 0;
-        _scale = 1.0;
-        _translateY = 0;
       });
 
   // ── Press down ──
   void _onTapDown(TapDownDetails d) {
-    setState(() {
-      _pressed = true;
-      _scale = 0.97;
-      _translateY = 3;
-    });
+    setState(() => _pressed = true);
+
+    // Play bounce & emoji jump
+    _bounceCtrl.forward(from: 0);
+    _emojiJumpCtrl.forward(from: 0);
+
     // Spawn ripple
     final rip = _RippleData(
       x: d.localPosition.dx,
@@ -331,26 +368,21 @@ class _GameCardState extends State<_GameCard>
       id: DateTime.now().microsecondsSinceEpoch,
     );
     setState(() => _ripples.add(rip));
-    Future.delayed(const Duration(milliseconds: 520), () {
+    Future.delayed(const Duration(milliseconds: 600), () {
       if (mounted) setState(() => _ripples.remove(rip));
     });
   }
 
   // ── Release ──
   void _onTapUp(TapUpDetails _) {
-    setState(() {
-      _pressed = false;
-      _scale = 1.0;
-      _translateY = 0;
+    setState(() => _pressed = false);
+    // Small delay so user sees the bounce before navigating
+    Future.delayed(const Duration(milliseconds: 180), () {
+      if (mounted) widget.onPlay();
     });
-    widget.onPlay();
   }
 
-  void _onTapCancel() => setState(() {
-        _pressed = false;
-        _scale = 1.0;
-        _translateY = 0;
-      });
+  void _onTapCancel() => setState(() => _pressed = false);
 
   @override
   Widget build(BuildContext context) {
@@ -367,95 +399,129 @@ class _GameCardState extends State<_GameCard>
                 onTapDown: _onTapDown,
                 onTapUp: _onTapUp,
                 onTapCancel: _onTapCancel,
-                child: AnimatedContainer(
-                  duration: _pressed
-                      ? const Duration(milliseconds: 80)
-                      : const Duration(milliseconds: 350),
-                  curve: _pressed ? Curves.easeIn : Curves.elasticOut,
-                  transform: Matrix4.identity()
-                    ..setEntry(3, 2, 0.001)
-                    ..rotateX(_rotX * pi / 180)
-                    ..rotateY(_rotY * pi / 180)
-                    ..translate(0.0, _translateY)
-                    ..scale(_scale),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(
-                        color: widget.game.color
-                            .withOpacity(_pressed ? 0.10 : 0.18),
-                        blurRadius: _pressed ? 8 : 24,
-                        spreadRadius: -4,
-                        offset: Offset(0, _pressed ? 2 : 12),
-                      ),
-                    ],
-                  ),
-                  clipBehavior: Clip.antiAlias,
-                  child: Stack(
-                    children: [
-                      // ── Konten kartu ──
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 24, horizontal: 16),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            // Icon bulat
-                            AnimatedContainer(
-                              duration: const Duration(milliseconds: 300),
-                              curve: Curves.elasticOut,
-                              width: 80,
-                              height: 80,
-                              transform: Matrix4.identity()
-                                ..scale(_pressed ? 0.9 : 1.0),
-                              decoration: BoxDecoration(
-                                color: widget.game.iconBg,
-                                shape: BoxShape.circle,
-                              ),
-                              alignment: Alignment.center,
-                              child: Text(
-                                widget.game.emoji,
-                                style: const TextStyle(fontSize: 42),
-                              ),
-                            ),
-                            const SizedBox(height: 14),
-
-                            // Judul
-                            Text(
-                              widget.game.title,
-                              style: TextStyle(
-                                fontSize: 17,
-                                fontWeight: FontWeight.w800,
-                                color: widget.game.color,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                            const SizedBox(height: 5),
-
-                            // Subjudul
-                            Text(
-                              widget.game.subtitle,
-                              style: const TextStyle(
-                                fontSize: 13,
-                                color: Color(0xFF6B7F87),
-                              ),
-                            ),
-                            const SizedBox(height: 18),
-
-                            // Tombol Play
-                            _TactileButton(
-                              color: widget.game.color,
-                              onTap: widget.onPlay,
+                child: AnimatedBuilder(
+                  animation: Listenable.merge([_bounceAnim, _emojiJumpAnim]),
+                  builder: (context, _) {
+                    final scale = _bounceAnim.value;
+                    return Transform(
+                      alignment: Alignment.center,
+                      transform: Matrix4.identity()
+                        ..setEntry(3, 2, 0.001)
+                        ..rotateX(_rotX * pi / 180)
+                        ..rotateY(_rotY * pi / 180)
+                        ..scale(scale),
+                      child: AnimatedContainer(
+                        duration: const Duration(milliseconds: 200),
+                        curve: Curves.easeOut,
+                        decoration: BoxDecoration(
+                          // Tint background on press
+                          color: _pressed
+                              ? Color.lerp(Colors.white, widget.game.iconBg, 0.5)!
+                              : Colors.white,
+                          borderRadius: BorderRadius.circular(20),
+                          // Glow border on press
+                          border: Border.all(
+                            color: _pressed
+                                ? widget.game.color.withOpacity(0.5)
+                                : Colors.transparent,
+                            width: 2.5,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: widget.game.color
+                                  .withOpacity(_pressed ? 0.30 : 0.15),
+                              blurRadius: _pressed ? 28 : 20,
+                              spreadRadius: _pressed ? 2 : -4,
+                              offset: Offset(0, _pressed ? 4 : 10),
                             ),
                           ],
                         ),
-                      ),
+                        clipBehavior: Clip.antiAlias,
+                        child: Stack(
+                          children: [
+                            // ── Konten kartu ──
+                            SizedBox(
+                              width: double.infinity,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 24, horizontal: 16),
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    // Icon bulat dengan jump animation
+                                    Transform.translate(
+                                      offset: Offset(0, _emojiJumpAnim.value),
+                                      child: AnimatedContainer(
+                                        duration: const Duration(milliseconds: 200),
+                                        curve: Curves.easeOut,
+                                        width: _pressed ? 90 : 80,
+                                        height: _pressed ? 90 : 80,
+                                        decoration: BoxDecoration(
+                                          color: widget.game.iconBg,
+                                          shape: BoxShape.circle,
+                                          boxShadow: _pressed
+                                              ? [
+                                                  BoxShadow(
+                                                    color: widget.game.color
+                                                        .withOpacity(0.3),
+                                                    blurRadius: 16,
+                                                    spreadRadius: 2,
+                                                  ),
+                                                ]
+                                              : [],
+                                        ),
+                                        alignment: Alignment.center,
+                                        child: AnimatedDefaultTextStyle(
+                                          duration: const Duration(milliseconds: 200),
+                                          style: TextStyle(
+                                            fontSize: _pressed ? 48 : 42,
+                                          ),
+                                          child: Text(widget.game.emoji),
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 14),
 
-                      // ── Ripple overlay ──
-                      ..._ripples.map((r) => _RippleWidget(data: r)),
-                    ],
-                  ),
+                                    // Judul
+                                    Text(
+                                      widget.game.title,
+                                      style: TextStyle(
+                                        fontSize: 17,
+                                        fontWeight: FontWeight.w800,
+                                        color: widget.game.color,
+                                      ),
+                                      textAlign: TextAlign.center,
+                                    ),
+                                    const SizedBox(height: 5),
+
+                                    // Subjudul
+                                    Text(
+                                      widget.game.subtitle,
+                                      style: const TextStyle(
+                                        fontSize: 13,
+                                        color: Color(0xFF6B7F87),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 18),
+
+                                    // Tombol Play
+                                    _TactileButton(
+                                      color: widget.game.color,
+                                      onTap: widget.onPlay,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+
+                            // ── Ripple overlay ──
+                            ..._ripples.map((r) => _RippleWidget(data: r)),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
                 ),
               ),
             );
