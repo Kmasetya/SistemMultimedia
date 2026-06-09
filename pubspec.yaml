@@ -25,9 +25,5 @@ flutter:
 
   assets:
     - assets/images/
-<<<<<<< HEAD
-    - assets/audio/
-=======
     - assets/audio/
     - assets/audio/audio effect/
->>>>>>> a5fdd3ffde89d9d671b525f44d69e00f98ffb6b1

@@ -83,7 +83,7 @@ class GamesScreen extends StatefulWidget {
 
 class _GamesScreenState extends State<GamesScreen>
     with TickerProviderStateMixin {
-  int _stars = 0;
+  static int _stars = 0;
   bool _starPop = false;
 
   // Cloud drift animations
