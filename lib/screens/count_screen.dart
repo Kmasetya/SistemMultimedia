@@ -38,6 +38,7 @@ class _CountScreenState extends State<CountScreen> {
   @override
   void initState() {
     super.initState();
+    AudioManager().pauseBgm();
     round = _Round.random();
   }
 

@@ -42,6 +42,7 @@ class _SoundsScreenState extends State<SoundsScreen> {
   @override
   void initState() {
     super.initState();
+    AudioManager().pauseBgm();
     _audioPlayer.setReleaseMode(ReleaseMode.stop);
     round = _Round.random();
   }

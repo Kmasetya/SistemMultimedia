@@ -27,12 +27,23 @@ class _SpellingScreenState extends State<SpellingScreen> {
   int score = 0;
   int currentIndex = 0;
   bool isFinished = false;
+  bool _waitingForAnimalSound = false;
 
   final AudioPlayer _audioPlayer = AudioPlayer();
+  final AudioPlayer _correctPlayer = AudioPlayer();
+  late final StreamSubscription _onCompleteSubscription;
 
   @override
   void initState() {
     super.initState();
+    AudioManager().pauseBgm();
+    // Dengarkan ketika suara hewan selesai diputar
+    _onCompleteSubscription = _audioPlayer.onPlayerComplete.listen((_) {
+      if (_waitingForAnimalSound) {
+        _waitingForAnimalSound = false;
+        _advanceRound();
+      }
+    });
     _startRound();
   }
 
@@ -69,41 +80,47 @@ class _SpellingScreenState extends State<SpellingScreen> {
   }
 
   void _handleLetterTap(int index) {
-    if (letterUsed[index] || currentIndex >= wordToSpell.length) return;
+    if (letterUsed[index] || currentIndex >= wordToSpell.length || _waitingForAnimalSound) return;
 
     final tappedLetter = shuffledLetters[index];
     final expectedLetter = wordToSpell[currentIndex];
 
     if (tappedLetter == expectedLetter) {
-      // Benar!
-      AudioManager().playCorrect();
+      // Huruf benar — stop lalu putar ulang agar selalu terdengar
+      _playCorrectSound();
       setState(() {
         letterUsed[index] = true;
         guessedLetters[currentIndex] = tappedLetter;
         currentIndex++;
       });
 
-      // Cek apakah kata sudah selesai
+      // Cek apakah semua huruf sudah ditempatkan
       if (currentIndex == wordToSpell.length) {
         score++;
-        _playAnimalSound();
-        
-        Timer(const Duration(milliseconds: 2000), () {
+        _waitingForAnimalSound = true;
+        // Tunggu corect.mp3 selesai sebelum mainkan suara hewan
+        Future.delayed(const Duration(milliseconds: 1500), () {
           if (!mounted) return;
-          if (qNum + 1 >= total) {
-            setState(() => isFinished = true);
-            AudioManager().playWin();
-          } else {
-            setState(() {
-              qNum++;
-              _startRound();
-            });
-          }
+          _playAnimalSound();
+          // _advanceRound akan dipanggil oleh onPlayerComplete callback
         });
       }
     } else {
-      // Salah ketuk
+      // Huruf salah
       AudioManager().playWrong();
+    }
+  }
+
+  void _advanceRound() {
+    if (!mounted) return;
+    if (qNum + 1 >= total) {
+      setState(() => isFinished = true);
+      AudioManager().playWin();
+    } else {
+      setState(() {
+        qNum++;
+        _startRound();
+      });
     }
   }
 
@@ -116,8 +133,21 @@ class _SpellingScreenState extends State<SpellingScreen> {
     });
   }
 
+  Future<void> _playCorrectSound() async {
+    try {
+      final path = 'audio/audio effect/corect.mp3';
+      final source = kIsWeb ? UrlSource('assets/$path') : AssetSource(path);
+      await _correctPlayer.stop();
+      await _correctPlayer.play(source);
+    } catch (e) {
+      debugPrint('Gagal memutar suara benar.');
+    }
+  }
+
   @override
   void dispose() {
+    _onCompleteSubscription.cancel();
+    _correctPlayer.dispose();
     _audioPlayer.dispose();
     super.dispose();
   }

@@ -6,7 +6,7 @@ import 'services/audio_manager.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   
-  // Initialize Background Music
+  // Initialize BGM player settings (does not auto-play)
   AudioManager().initBgm();
 
   SystemChrome.setPreferredOrientations([

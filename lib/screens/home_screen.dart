@@ -29,6 +29,9 @@ class _HomeScreenState extends State<HomeScreen>
     _bounceAnimation = Tween<double>(begin: 0, end: -10).animate(
       CurvedAnimation(parent: _bounceController, curve: Curves.easeInOutSine),
     );
+
+    // Start BGM when home screen loads (no-op if already playing)
+    AudioManager().ensureBgmPlaying();
   }
 
   @override
@@ -135,10 +138,15 @@ class _HomeScreenState extends State<HomeScreen>
 
                   // Simple, clean, pill-shaped Play button
                   _PlayButton(
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => const GamesScreen()),
-                    ),
+                    onTap: () async {
+                      // BGM keeps playing — no stop needed between home and games
+                      await Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const GamesScreen()),
+                      );
+                      // Resume BGM in case it was paused by a game screen
+                      AudioManager().ensureBgmPlaying();
+                    },
                   ).animate().fadeIn(delay: 400.ms).scale(begin: const Offset(0.9, 0.9)),
 
                   const SizedBox(height: 16),

@@ -113,6 +113,9 @@ class _GamesScreenState extends State<GamesScreen>
     _cloudAnimations = _cloudControllers
         .map((c) => Tween<double>(begin: 0.0, end: 1.0).animate(c))
         .toList();
+
+    // Ensure BGM is playing (no-op if already playing from HomeScreen)
+    AudioManager().ensureBgmPlaying();
   }
 
   @override
@@ -124,10 +127,18 @@ class _GamesScreenState extends State<GamesScreen>
   }
 
   void _onPlay(_GameItem game) async {
+    // Pause BGM before entering game screen (preserves position)
+    AudioManager().pauseBgm();
+
     final result = await Navigator.push<int>(
       context,
       MaterialPageRoute(builder: (_) => game.screenBuilder()),
     );
+
+    // Resume BGM when returning from game
+    if (mounted) {
+      AudioManager().ensureBgmPlaying();
+    }
 
     if (!mounted) return;
     final earned = result ?? 0;

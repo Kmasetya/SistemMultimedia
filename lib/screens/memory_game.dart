@@ -48,6 +48,7 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
   @override
   void initState() {
     super.initState();
+    AudioManager().pauseBgm();
     cards = _makeCards();
   }
 
