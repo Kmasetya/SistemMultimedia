@@ -45,7 +45,7 @@ class AudioManager {
         await _bgmPlayer.resume();
       } else {
         // Stopped or completed — start from beginning
-        final path = 'audio/audio effect/bgm_game.mp3';
+        const path = 'audio/audio effect/bgm_game.mp3';
         final source = kIsWeb ? UrlSource('assets/$path') : AssetSource(path);
         await _bgmPlayer.play(source, volume: bgmVolume.value);
       }

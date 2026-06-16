@@ -8,14 +8,12 @@ import '../services/audio_manager.dart';
 class _CardData {
   final String id;
   final Animal animal;
-  bool isFlipped;
-  bool isMatched;
+  bool isFlipped = false;
+  bool isMatched = false;
 
   _CardData({
     required this.id,
     required this.animal,
-    this.isFlipped = false,
-    this.isMatched = false,
   });
 }
 
@@ -151,12 +149,12 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.6),
+                            color: Colors.white.withValues(alpha: 0.6),
                             borderRadius: BorderRadius.circular(16),
                           ),
                           child: Row(
                             children: [
-                              Icon(Icons.bolt_rounded, color: AppColors.purple, size: 18),
+                              const Icon(Icons.bolt_rounded, color: AppColors.purple, size: 18),
                               const SizedBox(width: 4),
                               Text(
                                 '$moves',
@@ -266,7 +264,7 @@ class _MemoryCard extends StatelessWidget {
                 key: const ValueKey('front'),
                 decoration: BoxDecoration(
                   color: card.isMatched
-                      ? card.animal.color.withOpacity(0.2)
+                      ? card.animal.color.withValues(alpha: 0.2)
                       : Colors.white,
                   borderRadius: BorderRadius.circular(12),
                   border: card.isMatched
@@ -313,7 +311,7 @@ class _CircleBtn extends StatelessWidget {
         width: 38,
         height: 38,
         decoration: BoxDecoration(
-          color: Colors.white.withOpacity(0.6),
+          color: Colors.white.withValues(alpha: 0.6),
           shape: BoxShape.circle,
         ),
         child: Icon(icon, color: color, size: 22),

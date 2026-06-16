@@ -359,7 +359,7 @@ class _GameCardState extends State<_GameCard>
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
                   BoxShadow(
-                    color: widget.game.color.withOpacity(0.15),
+                    color: widget.game.color.withValues(alpha: 0.15),
                     blurRadius: 20,
                     spreadRadius: -4,
                     offset: const Offset(0, 10),
@@ -473,7 +473,7 @@ class _TactileButtonState extends State<_TactileButton> {
           borderRadius: BorderRadius.circular(999),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.20),
+              color: Colors.black.withValues(alpha: 0.20),
               blurRadius: 0,
               offset: Offset(0, _pressed ? 1 : 4),
             ),
@@ -517,8 +517,8 @@ class _GlassCircleButton extends StatelessWidget {
         height: 40,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: Colors.white.withOpacity(0.45),
-          border: Border.all(color: Colors.white.withOpacity(0.3)),
+          color: Colors.white.withValues(alpha: 0.45),
+          border: Border.all(color: Colors.white.withValues(alpha: 0.3)),
         ),
         child: child,
       ),
@@ -539,7 +539,7 @@ class _StarBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.50),
+        color: Colors.white.withValues(alpha: 0.50),
         borderRadius: BorderRadius.circular(999),
       ),
       child: Row(

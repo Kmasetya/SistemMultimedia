@@ -135,7 +135,7 @@ class _SpellingScreenState extends State<SpellingScreen> {
 
   Future<void> _playCorrectSound() async {
     try {
-      final path = 'audio/audio effect/corect.mp3';
+      const path = 'audio/audio effect/corect.mp3';
       final source = kIsWeb ? UrlSource('assets/$path') : AssetSource(path);
       await _correctPlayer.stop();
       await _correctPlayer.play(source);
@@ -183,7 +183,7 @@ class _SpellingScreenState extends State<SpellingScreen> {
                         ),
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                          decoration: BoxDecoration(color: Colors.white.withOpacity(0.5), borderRadius: BorderRadius.circular(16)),
+                          decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.5), borderRadius: BorderRadius.circular(16)),
                           child: Row(children: [
                             const Icon(Icons.star_rounded, color: Colors.amber, size: 16),
                             const SizedBox(width: 4),
@@ -201,7 +201,7 @@ class _SpellingScreenState extends State<SpellingScreen> {
                       borderRadius: BorderRadius.circular(4),
                       child: LinearProgressIndicator(
                         value: qNum / total,
-                        backgroundColor: Colors.white.withOpacity(0.4),
+                        backgroundColor: Colors.white.withValues(alpha: 0.4),
                         valueColor: const AlwaysStoppedAnimation(Color(0xFF1976D2)),
                         minHeight: 8,
                       ),
@@ -216,7 +216,7 @@ class _SpellingScreenState extends State<SpellingScreen> {
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(28),
-                      boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 10, offset: const Offset(0, 5))],
+                      boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.1), blurRadius: 10, offset: const Offset(0, 5))],
                     ),
                     padding: const EdgeInsets.all(16),
                     child: Image.asset(currentAnimal.imagePath, fit: BoxFit.contain)
@@ -239,11 +239,11 @@ class _SpellingScreenState extends State<SpellingScreen> {
                         height: 55,
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
-                          color: letter != null ? AppColors.green : Colors.white.withOpacity(0.7),
+                          color: letter != null ? AppColors.green : Colors.white.withValues(alpha: 0.7),
                           borderRadius: BorderRadius.circular(12),
                           border: isCurrent ? Border.all(color: Colors.white, width: 3) : null,
                           boxShadow: letter != null 
-                              ? [BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 4, offset: const Offset(0, 2))]
+                              ? [BoxShadow(color: Colors.black.withValues(alpha: 0.1), blurRadius: 4, offset: const Offset(0, 2))]
                               : null,
                         ),
                         child: Text(
@@ -279,7 +279,7 @@ class _SpellingScreenState extends State<SpellingScreen> {
                               decoration: BoxDecoration(
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(16),
-                                boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.15), blurRadius: 6, offset: const Offset(0, 4))],
+                                boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.15), blurRadius: 6, offset: const Offset(0, 4))],
                               ),
                               child: Text(
                                 letter,
@@ -346,7 +346,7 @@ class _CircleBtn extends StatelessWidget {
       onTap: onTap,
       child: Container(
         width: 40, height: 40,
-        decoration: BoxDecoration(color: Colors.white.withOpacity(0.5), shape: BoxShape.circle),
+        decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.5), shape: BoxShape.circle),
         child: const Icon(Icons.arrow_back_rounded, color: Color(0xFF1565C0), size: 24),
       ),
     );

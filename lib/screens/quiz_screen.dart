@@ -14,7 +14,7 @@ class _Question {
   factory _Question.random() {
     final shuffled = List<Animal>.from(allAnimals)..shuffle();
     final correct = shuffled[0];
-    final options = [correct, ...shuffled.skip(1).take(3).toList()]..shuffle();
+    final options = [correct, ...shuffled.skip(1).take(3)]..shuffle();
     return _Question(correct: correct, options: options);
   }
 }
@@ -110,7 +110,7 @@ class _QuizScreenState extends State<QuizScreen> {
                         ),
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                          decoration: BoxDecoration(color: Colors.white.withOpacity(0.6), borderRadius: BorderRadius.circular(16)),
+                          decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.6), borderRadius: BorderRadius.circular(16)),
                           child: Row(children: [
                             const Icon(Icons.star_rounded, color: AppColors.red, size: 16),
                             const SizedBox(width: 4),
@@ -129,7 +129,7 @@ class _QuizScreenState extends State<QuizScreen> {
                           borderRadius: BorderRadius.circular(4),
                           child: LinearProgressIndicator(
                             value: qNum / total,
-                            backgroundColor: Colors.white.withOpacity(0.4),
+                            backgroundColor: Colors.white.withValues(alpha: 0.4),
                             valueColor: const AlwaysStoppedAnimation(AppColors.red),
                             minHeight: 8,
                           ),
@@ -152,7 +152,7 @@ class _QuizScreenState extends State<QuizScreen> {
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(28),
-                      boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.12), blurRadius: 12, offset: const Offset(0, 6))],
+                      boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.12), blurRadius: 12, offset: const Offset(0, 6))],
                     ),
                     padding: const EdgeInsets.all(12),
                     child: Image.asset(question.correct.imagePath, fit: BoxFit.contain),
@@ -187,7 +187,7 @@ class _QuizScreenState extends State<QuizScreen> {
                               decoration: BoxDecoration(
                                 color: bg,
                                 borderRadius: BorderRadius.circular(18),
-                                boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.08), blurRadius: 6, offset: const Offset(0, 2))],
+                                boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.08), blurRadius: 6, offset: const Offset(0, 2))],
                               ),
                               child: Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -254,7 +254,7 @@ class _CircleBtn extends StatelessWidget {
       onTap: onTap,
       child: Container(
         width: 38, height: 38,
-        decoration: BoxDecoration(color: Colors.white.withOpacity(0.6), shape: BoxShape.circle),
+        decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.6), shape: BoxShape.circle),
         child: Icon(Icons.arrow_back_rounded, color: color, size: 22),
       ),
     );

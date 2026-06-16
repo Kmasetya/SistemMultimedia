@@ -113,7 +113,7 @@ class _CountScreenState extends State<CountScreen> {
                         ),
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                          decoration: BoxDecoration(color: Colors.white.withOpacity(0.6), borderRadius: BorderRadius.circular(16)),
+                          decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.6), borderRadius: BorderRadius.circular(16)),
                           child: Row(children: [
                             const Icon(Icons.star_rounded, color: AppColors.green, size: 16),
                             const SizedBox(width: 4),
@@ -132,7 +132,7 @@ class _CountScreenState extends State<CountScreen> {
                           borderRadius: BorderRadius.circular(4),
                           child: LinearProgressIndicator(
                             value: qNum / total,
-                            backgroundColor: Colors.white.withOpacity(0.4),
+                            backgroundColor: Colors.white.withValues(alpha: 0.4),
                             valueColor: const AlwaysStoppedAnimation(AppColors.green),
                             minHeight: 8,
                           ),
@@ -162,7 +162,7 @@ class _CountScreenState extends State<CountScreen> {
                               decoration: BoxDecoration(
                                 color: Colors.white,
                                 borderRadius: BorderRadius.circular(20),
-                                boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 6, offset: const Offset(0, 3))],
+                                boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.1), blurRadius: 6, offset: const Offset(0, 3))],
                               ),
                               padding: const EdgeInsets.all(4),
                               child: Image.asset(round.animal.imagePath, fit: BoxFit.contain),
@@ -194,7 +194,7 @@ class _CountScreenState extends State<CountScreen> {
                           margin: const EdgeInsets.symmetric(horizontal: 6),
                           decoration: BoxDecoration(
                             color: bg, shape: BoxShape.circle,
-                            boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.12), blurRadius: 6, offset: const Offset(0, 3))],
+                            boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.12), blurRadius: 6, offset: const Offset(0, 3))],
                           ),
                           child: Center(
                             child: Text('$num', style: GoogleFonts.nunito(fontSize: 24, fontWeight: FontWeight.w900, color: textColor)),
@@ -254,8 +254,8 @@ class _CircleBtn extends StatelessWidget {
       onTap: onTap,
       child: Container(
         width: 38, height: 38,
-        decoration: BoxDecoration(color: Colors.white.withOpacity(0.6), shape: BoxShape.circle),
-        child: Icon(Icons.arrow_back_rounded, color: AppColors.green, size: 22),
+        decoration: BoxDecoration(color: Colors.white.withValues(alpha: 0.6), shape: BoxShape.circle),
+        child: const Icon(Icons.arrow_back_rounded, color: AppColors.green, size: 22),
       ),
     );
   }
