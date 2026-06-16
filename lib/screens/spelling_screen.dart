@@ -178,7 +178,7 @@ class _SpellingScreenState extends State<SpellingScreen> {
                       children: [
                         _CircleBtn(onTap: () => Navigator.pop(context, score)),
                         Expanded(
-                          child: Text('Spelling Game', textAlign: TextAlign.center,
+                          child: Text('Permainan Ejaan', textAlign: TextAlign.center,
                             style: GoogleFonts.nunito(fontSize: 24, fontWeight: FontWeight.w800, color: const Color(0xFF1565C0))),
                         ),
                         Container(

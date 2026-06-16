@@ -105,7 +105,7 @@ class _QuizScreenState extends State<QuizScreen> {
                       children: [
                         _CircleBtn(onTap: () => Navigator.pop(context, score), color: AppColors.red),
                         Expanded(
-                          child: Text('Animal Quiz', textAlign: TextAlign.center,
+                          child: Text('Kuis Hewan', textAlign: TextAlign.center,
                             style: GoogleFonts.nunito(fontSize: 24, fontWeight: FontWeight.w800, color: const Color(0xFFB71C1C))),
                         ),
                         Container(
@@ -142,7 +142,7 @@ class _QuizScreenState extends State<QuizScreen> {
 
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                    child: Text('What animal is this?',
+                    child: Text('Hewan apakah ini?',
                       style: GoogleFonts.nunito(fontSize: 26, fontWeight: FontWeight.w800, color: const Color(0xFFB71C1C))),
                   ),
 
@@ -219,16 +219,16 @@ class _QuizScreenState extends State<QuizScreen> {
                           Text('${'⭐' * stars}${'☆' * (3 - stars)}', style: const TextStyle(fontSize: 40)),
                           const SizedBox(height: 8),
                           Text(
-                            score >= 8 ? 'Excellent!' : score >= 5 ? 'Good Job!' : 'Keep Trying!',
+                            score >= 8 ? 'Luar Biasa!' : score >= 5 ? 'Bagus Sekali!' : 'Terus Berusaha!',
                             style: GoogleFonts.nunito(fontSize: 30, fontWeight: FontWeight.w900, color: AppColors.red),
                           ),
                           const SizedBox(height: 4),
-                          Text('$score / $total Correct', style: GoogleFonts.nunito(fontSize: 18, color: AppColors.textGrey)),
+                          Text('$score / $total Benar', style: GoogleFonts.nunito(fontSize: 18, color: AppColors.textGrey)),
                           const SizedBox(height: 24),
-                          _FullBtn(label: 'Try Again', color: AppColors.red, onTap: _restart),
+                          _FullBtn(label: 'Coba Lagi', color: AppColors.red, onTap: _restart),
                           TextButton(
                             onPressed: () => Navigator.pop(context, score),
-                            child: Text('Back to Menu', style: GoogleFonts.nunito(color: AppColors.textGrey, fontSize: 15)),
+                            child: Text('Kembali ke Menu', style: GoogleFonts.nunito(color: AppColors.textGrey, fontSize: 15)),
                           ),
                         ],
                       ),

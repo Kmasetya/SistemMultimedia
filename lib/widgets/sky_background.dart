@@ -14,24 +14,32 @@ class SkyBackground extends StatelessWidget {
       decoration: const BoxDecoration(gradient: AppColors.skyGradient),
       child: Stack(
         children: [
-          // Elegant, simple clouds — no messy shadows
-          const _Cloud(left: -15, top: 60, scale: 1.2, opacity: 0.9),
-          _Cloud(left: size.width - 140, top: 50, scale: 0.9, opacity: 0.8),
-          _Cloud(left: size.width / 2 - 70, top: 100, scale: 0.7, opacity: 0.7),
-          _Cloud(left: -20, top: size.height * 0.4, scale: 0.8, opacity: 0.5),
-          _Cloud(left: size.width - 110, top: size.height * 0.45, scale: 1.0, opacity: 0.6),
+          // Awan dan tanah dibungkus IgnorePointer agar tidak
+          // mengganggu hit-test (penyebab crash mouse_tracker di web)
+          IgnorePointer(
+            child: Stack(
+              children: [
+                // Elegant, simple clouds — no messy shadows
+                const _Cloud(left: -15, top: 60, scale: 1.2, opacity: 0.9),
+                _Cloud(left: size.width - 140, top: 50, scale: 0.9, opacity: 0.8),
+                _Cloud(left: size.width / 2 - 70, top: 100, scale: 0.7, opacity: 0.7),
+                _Cloud(left: -20, top: size.height * 0.4, scale: 0.8, opacity: 0.5),
+                _Cloud(left: size.width - 110, top: size.height * 0.45, scale: 1.0, opacity: 0.6),
 
-          // Clean, modern curved ground at the bottom
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: SizedBox(
-              height: size.height * 0.1,
-              child: CustomPaint(
-                painter: _SmoothGroundPainter(),
-                size: Size(size.width, size.height * 0.1),
-              ),
+                // Clean, modern curved ground at the bottom
+                Positioned(
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  child: SizedBox(
+                    height: size.height * 0.1,
+                    child: CustomPaint(
+                      painter: _SmoothGroundPainter(),
+                      size: Size(size.width, size.height * 0.1),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
 

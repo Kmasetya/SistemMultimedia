@@ -142,7 +142,7 @@ class _SoundsScreenState extends State<SoundsScreen> {
                           Navigator.pop(context, score);
                         }),
                         Expanded(
-                          child: Text('Animal Sounds', textAlign: TextAlign.center,
+                          child: Text('Suara Hewan', textAlign: TextAlign.center,
                             style: GoogleFonts.nunito(fontSize: 24, fontWeight: FontWeight.w800, color: const Color(0xFFBF360C))),
                         ),
                         Container(
@@ -174,7 +174,7 @@ class _SoundsScreenState extends State<SoundsScreen> {
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                     child: Text(
-                      'Listen to the sound!',
+                      'Dengarkan suaranya!',
                       textAlign: TextAlign.center,
                       style: GoogleFonts.nunito(fontSize: 22, fontWeight: FontWeight.w800, color: const Color(0xFFBF360C)),
                     ),
@@ -200,7 +200,7 @@ class _SoundsScreenState extends State<SoundsScreen> {
                             child: Row(mainAxisSize: MainAxisSize.min, children: [
                               const Icon(Icons.volume_up_rounded, color: Colors.white, size: 20),
                               const SizedBox(width: 8),
-                              Text('Play Sound', style: GoogleFonts.nunito(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 16)),
+                              Text('Putar Suara', style: GoogleFonts.nunito(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 16)),
                             ]),
                           ),
                         ),
@@ -261,16 +261,16 @@ class _SoundsScreenState extends State<SoundsScreen> {
                           Text('${'⭐' * stars}${'☆' * (3 - stars)}', style: const TextStyle(fontSize: 40)),
                           const SizedBox(height: 8),
                           Text(
-                            score >= 6 ? 'Superstar!' : score >= 4 ? 'Good ears!' : 'Keep listening!',
+                            score >= 6 ? 'Bintang!' : score >= 4 ? 'Pendengaran Bagus!' : 'Terus Dengarkan!',
                             style: GoogleFonts.nunito(fontSize: 28, fontWeight: FontWeight.w900, color: AppColors.orange),
                           ),
                           const SizedBox(height: 4),
-                          Text('$score / $total Correct', style: GoogleFonts.nunito(fontSize: 18, color: AppColors.textGrey)),
+                          Text('$score / $total Benar', style: GoogleFonts.nunito(fontSize: 18, color: AppColors.textGrey)),
                           const SizedBox(height: 24),
-                          _FullBtn(label: 'Play Again', color: AppColors.orange, onTap: _restart),
+                          _FullBtn(label: 'Main Lagi', color: AppColors.orange, onTap: _restart),
                           TextButton(
                             onPressed: () => Navigator.pop(context, score),
-                            child: Text('Back to Menu', style: GoogleFonts.nunito(color: AppColors.textGrey, fontSize: 15)),
+                            child: Text('Kembali ke Menu', style: GoogleFonts.nunito(color: AppColors.textGrey, fontSize: 15)),
                           ),
                         ],
                       ),

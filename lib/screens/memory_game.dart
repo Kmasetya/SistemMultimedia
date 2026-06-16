@@ -139,7 +139,7 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
                         ),
                         Expanded(
                           child: Text(
-                            'Memory Match',
+                            'Cocokkan Memori',
                             textAlign: TextAlign.center,
                             style: GoogleFonts.nunito(
                               fontSize: 24,
@@ -227,14 +227,14 @@ class _MemoryGameScreenState extends State<MemoryGameScreen> {
                         children: [
                           const Text('🎉', style: TextStyle(fontSize: 60)),
                           const SizedBox(height: 8),
-                          Text('You Win!', style: GoogleFonts.nunito(fontSize: 36, fontWeight: FontWeight.w900, color: AppColors.purple)),
+                          Text('Kamu Menang!', style: GoogleFonts.nunito(fontSize: 36, fontWeight: FontWeight.w900, color: AppColors.purple)),
                           const SizedBox(height: 4),
-                          Text('Completed in $moves moves', style: GoogleFonts.nunito(fontSize: 16, color: AppColors.textGrey)),
+                          Text('Selesai dalam $moves langkah', style: GoogleFonts.nunito(fontSize: 16, color: AppColors.textGrey)),
                           const SizedBox(height: 24),
-                          _FullBtn(label: 'Play Again', color: AppColors.purple, onTap: _restart),
+                          _FullBtn(label: 'Main Lagi', color: AppColors.purple, onTap: _restart),
                           TextButton(
                             onPressed: () => Navigator.pop(context, matches),
-                            child: Text('Back to Menu', style: GoogleFonts.nunito(color: AppColors.textGrey, fontSize: 15)),
+                            child: Text('Kembali ke Menu', style: GoogleFonts.nunito(color: AppColors.textGrey, fontSize: 15)),
                           ),
                         ],
                       ),

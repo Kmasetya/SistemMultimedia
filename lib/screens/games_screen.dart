@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 import '../services/audio_manager.dart';
 import 'memory_game.dart';
@@ -31,40 +30,40 @@ class _GameItem {
 final List<_GameItem> _kGames = [
   _GameItem(
     imagePath: 'assets/images/memory.png',
-    title: 'Memory Game',
-    subtitle: 'Find the pairs!',
+    title: 'Permainan Memori',
+    subtitle: 'Temukan pasangannya!',
     color: const Color(0xFF862DCB),
     iconBg: const Color(0xFFF3EEFF),
     screenBuilder: () => const MemoryGameScreen(),
   ),
   _GameItem(
     imagePath: 'assets/images/quiz.png',
-    title: 'Animal Quiz',
-    subtitle: 'Name the animal!',
+    title: 'Kuis Hewan',
+    subtitle: 'Sebutkan nama hewannya!',
     color: const Color(0xFFB60E3D),
     iconBg: const Color(0xFFFFF0F2),
     screenBuilder: () => const QuizScreen(),
   ),
   _GameItem(
     imagePath: 'assets/images/count.png',
-    title: 'Count Animals',
-    subtitle: 'How many can you see?',
+    title: 'Hitung Hewan',
+    subtitle: 'Ada berapa hewan?',
     color: const Color(0xFF006780),
     iconBg: const Color(0xFFE0F5FF),
     screenBuilder: () => const CountScreen(),
   ),
   _GameItem(
     imagePath: 'assets/images/sounds.png',
-    title: 'Animal Sounds',
-    subtitle: 'Listen and guess!',
+    title: 'Suara Hewan',
+    subtitle: 'Dengarkan dan tebak!',
     color: const Color(0xFFDA3054),
     iconBg: const Color(0xFFFFF0F4),
     screenBuilder: () => const SoundsScreen(),
   ),
   _GameItem(
     imagePath: 'assets/images/spell.png',
-    title: 'Spell Animal',
-    subtitle: 'Spell the name!',
+    title: 'Eja Hewan',
+    subtitle: 'Eja nama hewannya!',
     color: const Color(0xFF004E61),
     iconBg: const Color(0xFFE0F5FF),
     screenBuilder: () => const SpellingScreen(),
@@ -163,34 +162,17 @@ class _GamesScreenState extends State<GamesScreen>
             child: ColoredBox(color: Color(0xFFA8D8EA)),
           ),
 
-          // ── Awan bergerak ──
-          ...List.generate(_clouds.length, (i) {
-            return AnimatedBuilder(
-              animation: _cloudAnimations[i],
-              builder: (_, __) {
-                final screenW = MediaQuery.of(context).size.width;
-                final screenH = MediaQuery.of(context).size.height;
-                return Positioned(
-                  top: screenH * _clouds[i].top,
-                  left: _cloudAnimations[i].value *
-                          (screenW + _clouds[i].width + 100) -
-                      _clouds[i].width,
-                  child: Opacity(
-                    opacity: _clouds[i].opacity,
-                    child: Container(
-                      width: _clouds[i].width,
-                      height: _clouds[i].height,
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius:
-                            BorderRadius.circular(_clouds[i].height / 2),
-                      ),
-                    ),
-                  ),
-                );
-              },
-            );
-          }),
+          // ── Awan bergerak (IgnorePointer + RepaintBoundary untuk web) ──
+          Positioned.fill(
+            child: IgnorePointer(
+              child: RepaintBoundary(
+                child: _CloudLayer(
+                  clouds: _clouds,
+                  animations: _cloudAnimations,
+                ),
+              ),
+            ),
+          ),
 
           // ── Konten utama ──
           SafeArea(
@@ -220,7 +202,7 @@ class _GamesScreenState extends State<GamesScreen>
                 color: Color(0xFF004E61), size: 22),
           ),
           const Text(
-            'Choose a Game!',
+            'Pilih Permainan!',
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.w800,
@@ -249,7 +231,8 @@ class _GamesScreenState extends State<GamesScreen>
 }
 
 // ─────────────────────────────────────────────
-//  Game Card  (dengan semua animasi)
+//  Game Card  (disederhanakan — tanpa MouseRegion/tilt/ripple
+//  agar tidak crash di Flutter Web)
 // ─────────────────────────────────────────────
 class _GameCard extends StatefulWidget {
   final _GameItem game;
@@ -281,13 +264,6 @@ class _GameCardState extends State<_GameCard>
   late final AnimationController _emojiJumpCtrl;
   late final Animation<double> _emojiJumpAnim;
 
-  // ── State untuk press + tilt ──
-  double _rotX = 0, _rotY = 0;
-  bool _pressed = false;
-
-  // ── Ripple ──
-  final List<_RippleData> _ripples = [];
-
   @override
   void initState() {
     super.initState();
@@ -315,10 +291,10 @@ class _GameCardState extends State<_GameCard>
       duration: const Duration(milliseconds: 500),
     );
     _bounceAnim = TweenSequence<double>([
-      TweenSequenceItem(tween: Tween(begin: 1.0, end: 0.92), weight: 20),
-      TweenSequenceItem(tween: Tween(begin: 0.92, end: 1.06), weight: 40),
-      TweenSequenceItem(tween: Tween(begin: 1.06, end: 0.98), weight: 20),
-      TweenSequenceItem(tween: Tween(begin: 0.98, end: 1.0), weight: 20),
+      TweenSequenceItem(tween: Tween(begin: 1.0, end: 0.95), weight: 20),
+      TweenSequenceItem(tween: Tween(begin: 0.95, end: 1.04), weight: 40),
+      TweenSequenceItem(tween: Tween(begin: 1.04, end: 0.99), weight: 20),
+      TweenSequenceItem(tween: Tween(begin: 0.99, end: 1.0), weight: 20),
     ]).animate(CurvedAnimation(
       parent: _bounceCtrl,
       curve: Curves.easeOut,
@@ -330,10 +306,10 @@ class _GameCardState extends State<_GameCard>
       duration: const Duration(milliseconds: 600),
     );
     _emojiJumpAnim = TweenSequence<double>([
-      TweenSequenceItem(tween: Tween(begin: 0, end: -22), weight: 25),
-      TweenSequenceItem(tween: Tween(begin: -22, end: 0), weight: 25),
-      TweenSequenceItem(tween: Tween(begin: 0, end: -10), weight: 25),
-      TweenSequenceItem(tween: Tween(begin: -10, end: 0), weight: 25),
+      TweenSequenceItem(tween: Tween(begin: 0, end: -18), weight: 25),
+      TweenSequenceItem(tween: Tween(begin: -18, end: 0), weight: 25),
+      TweenSequenceItem(tween: Tween(begin: 0, end: -8), weight: 25),
+      TweenSequenceItem(tween: Tween(begin: -8, end: 0), weight: 25),
     ]).animate(CurvedAnimation(
       parent: _emojiJumpCtrl,
       curve: Curves.easeOut,
@@ -353,52 +329,13 @@ class _GameCardState extends State<_GameCard>
     super.dispose();
   }
 
-  // ── Tilt saat hover (desktop/mouse) ──
-  void _onHover(PointerEvent e, BoxConstraints box) {
-    final cx = box.maxWidth / 2;
-    final cy = box.maxHeight / 2;
-    setState(() {
-      _rotX = (e.localPosition.dy - cy) / 18;
-      _rotY = (cx - e.localPosition.dx) / 18;
-    });
-  }
-
-  void _onHoverExit() => setState(() {
-        _rotX = 0;
-        _rotY = 0;
-      });
-
-  // ── Press down ──
-  void _onTapDown(TapDownDetails d) {
-    setState(() => _pressed = true);
-
-    // Play bounce & emoji jump
+  void _onCardTap() {
     _bounceCtrl.forward(from: 0);
     _emojiJumpCtrl.forward(from: 0);
-
-    // Spawn ripple
-    final rip = _RippleData(
-      x: d.localPosition.dx,
-      y: d.localPosition.dy,
-      color: widget.game.color,
-      id: DateTime.now().microsecondsSinceEpoch,
-    );
-    setState(() => _ripples.add(rip));
-    Future.delayed(const Duration(milliseconds: 600), () {
-      if (mounted) setState(() => _ripples.remove(rip));
-    });
-  }
-
-  // ── Release ──
-  void _onTapUp(TapUpDetails _) {
-    setState(() => _pressed = false);
-    // Small delay so user sees the bounce before navigating
-    Future.delayed(const Duration(milliseconds: 180), () {
+    Future.delayed(const Duration(milliseconds: 200), () {
       if (mounted) widget.onPlay();
     });
   }
-
-  void _onTapCancel() => setState(() => _pressed = false);
 
   @override
   Widget build(BuildContext context) {
@@ -406,224 +343,99 @@ class _GameCardState extends State<_GameCard>
       opacity: _entryOpacity,
       child: SlideTransition(
         position: _entrySlide,
-        child: LayoutBuilder(
-          builder: (_, constraints) {
-            return MouseRegion(
-              onHover: (e) => _onHover(e, constraints),
-              onExit: (_) => _onHoverExit(),
-              child: GestureDetector(
-                onTapDown: _onTapDown,
-                onTapUp: _onTapUp,
-                onTapCancel: _onTapCancel,
-                child: AnimatedBuilder(
-                  animation: Listenable.merge([_bounceAnim, _emojiJumpAnim]),
-                  builder: (context, _) {
-                    final scale = _bounceAnim.value;
-                    return Transform(
-                      alignment: Alignment.center,
-                      transform: Matrix4.identity()
-                        ..setEntry(3, 2, 0.001)
-                        ..rotateX(_rotX * pi / 180)
-                        ..rotateY(_rotY * pi / 180)
-                        ..scale(scale),
-                      child: AnimatedContainer(
-                        duration: const Duration(milliseconds: 200),
-                        curve: Curves.easeOut,
-                        decoration: BoxDecoration(
-                          // Tint background on press
-                          color: _pressed
-                              ? Color.lerp(Colors.white, widget.game.iconBg, 0.5)!
-                              : Colors.white,
-                          borderRadius: BorderRadius.circular(20),
-                          // Glow border on press
-                          border: Border.all(
-                            color: _pressed
-                                ? widget.game.color.withOpacity(0.5)
-                                : Colors.transparent,
-                            width: 2.5,
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: widget.game.color
-                                  .withOpacity(_pressed ? 0.30 : 0.15),
-                              blurRadius: _pressed ? 28 : 20,
-                              spreadRadius: _pressed ? 2 : -4,
-                              offset: Offset(0, _pressed ? 4 : 10),
-                            ),
-                          ],
-                        ),
-                        clipBehavior: Clip.antiAlias,
-                        child: Stack(
-                          children: [
-                            // ── Konten kartu ──
-                            SizedBox(
-                              width: double.infinity,
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 24, horizontal: 16),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                  children: [
-                                    // Icon bulat dengan jump animation
-                                    Transform.translate(
-                                      offset: Offset(0, _emojiJumpAnim.value),
-                                      child: AnimatedContainer(
-                                        duration: const Duration(milliseconds: 200),
-                                        curve: Curves.easeOut,
-                                        width: _pressed ? 90 : 80,
-                                        height: _pressed ? 90 : 80,
-                                        decoration: BoxDecoration(
-                                          color: widget.game.iconBg,
-                                          shape: BoxShape.circle,
-                                          boxShadow: _pressed
-                                              ? [
-                                                  BoxShadow(
-                                                    color: widget.game.color
-                                                        .withOpacity(0.3),
-                                                    blurRadius: 16,
-                                                    spreadRadius: 2,
-                                                  ),
-                                                ]
-                                              : [],
-                                        ),
-                                        alignment: Alignment.center,
-                                        child: ClipOval(
-                                          child: Image.asset(
-                                            widget.game.imagePath,
-                                            width: 60,
-                                            height: 60,
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    const SizedBox(height: 14),
-
-                                    // Judul
-                                    Text(
-                                      widget.game.title,
-                                      style: TextStyle(
-                                        fontSize: 17,
-                                        fontWeight: FontWeight.w800,
-                                        color: widget.game.color,
-                                      ),
-                                      textAlign: TextAlign.center,
-                                    ),
-                                    const SizedBox(height: 5),
-
-                                    // Subjudul
-                                    Text(
-                                      widget.game.subtitle,
-                                      style: const TextStyle(
-                                        fontSize: 13,
-                                        color: Color(0xFF6B7F87),
-                                      ),
-                                    ),
-                                    const SizedBox(height: 18),
-
-                                    // Tombol Play
-                                    _TactileButton(
-                                      color: widget.game.color,
-                                      onTap: widget.onPlay,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-
-                            // ── Ripple overlay ──
-                            ..._ripples.map((r) => _RippleWidget(data: r)),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
+        child: AnimatedBuilder(
+          animation: Listenable.merge([_bounceAnim, _emojiJumpAnim]),
+          builder: (context, child) {
+            return Transform.scale(
+              scale: _bounceAnim.value,
+              child: child,
             );
           },
-        ),
-      ),
-    );
-  }
-}
+          child: GestureDetector(
+            onTap: _onCardTap,
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: widget.game.color.withOpacity(0.15),
+                    blurRadius: 20,
+                    spreadRadius: -4,
+                    offset: const Offset(0, 10),
+                  ),
+                ],
+              ),
+              child: SizedBox(
+                width: double.infinity,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 24, horizontal: 16),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      // Icon bulat dengan jump animation
+                      AnimatedBuilder(
+                        animation: _emojiJumpAnim,
+                        builder: (_, child) => Transform.translate(
+                          offset: Offset(0, _emojiJumpAnim.value),
+                          child: child,
+                        ),
+                        child: Container(
+                          width: 80,
+                          height: 80,
+                          decoration: BoxDecoration(
+                            color: widget.game.iconBg,
+                            shape: BoxShape.circle,
+                          ),
+                          alignment: Alignment.center,
+                          child: ClipOval(
+                            child: Image.asset(
+                              widget.game.imagePath,
+                              width: 60,
+                              height: 60,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 14),
 
-// ─────────────────────────────────────────────
-//  Ripple
-// ─────────────────────────────────────────────
-class _RippleData {
-  final double x, y;
-  final Color color;
-  final int id;
-  const _RippleData({
-    required this.x,
-    required this.y,
-    required this.color,
-    required this.id,
-  });
-}
+                      // Judul
+                      Text(
+                        widget.game.title,
+                        style: TextStyle(
+                          fontSize: 17,
+                          fontWeight: FontWeight.w800,
+                          color: widget.game.color,
+                        ),
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 5),
 
-class _RippleWidget extends StatefulWidget {
-  final _RippleData data;
-  const _RippleWidget({required this.data});
+                      // Subjudul
+                      Text(
+                        widget.game.subtitle,
+                        style: const TextStyle(
+                          fontSize: 13,
+                          color: Color(0xFF6B7F87),
+                        ),
+                      ),
+                      const SizedBox(height: 18),
 
-  @override
-  State<_RippleWidget> createState() => _RippleWidgetState();
-}
-
-class _RippleWidgetState extends State<_RippleWidget>
-    with SingleTickerProviderStateMixin {
-  late final AnimationController _ctrl;
-  late final Animation<double> _size;
-  late final Animation<double> _opacity;
-
-  @override
-  void initState() {
-    super.initState();
-    _ctrl = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 500),
-    )..forward();
-    _size = Tween<double>(begin: 0, end: 280).animate(
-      CurvedAnimation(parent: _ctrl, curve: Curves.easeOut),
-    );
-    _opacity = Tween<double>(begin: 0.35, end: 0).animate(
-      CurvedAnimation(parent: _ctrl, curve: Curves.easeOut),
-    );
-  }
-
-  @override
-  void dispose() {
-    _ctrl.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Positioned.fill(
-      child: AnimatedBuilder(
-        animation: _ctrl,
-        builder: (_, __) {
-          final s = _size.value;
-          return Stack(children: [
-            Positioned(
-              left: widget.data.x - s / 2,
-              top: widget.data.y - s / 2,
-              width: s,
-              height: s,
-              child: Opacity(
-                opacity: _opacity.value,
-                child: Container(
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: widget.data.color,
+                      // Tombol Main
+                      _TactileButton(
+                        color: widget.game.color,
+                        onTap: widget.onPlay,
+                      ),
+                    ],
                   ),
                 ),
               ),
             ),
-          ]);
-        },
+          ),
+        ),
       ),
     );
   }
@@ -674,7 +486,7 @@ class _TactileButtonState extends State<_TactileButton> {
             Icon(Icons.play_arrow_rounded, color: Colors.white, size: 18),
             SizedBox(width: 5),
             Text(
-              'Play',
+              'Main',
               style: TextStyle(
                 color: Colors.white,
                 fontWeight: FontWeight.w700,
@@ -764,4 +576,60 @@ class _CloudData {
     required this.duration,
     this.opacity = 0.55,
   });
+}
+
+// ─────────────────────────────────────────────
+//  Cloud Layer — CustomPaint agar tidak trigger
+//  re-layout/hit-test (penyebab mouse_tracker crash)
+// ─────────────────────────────────────────────
+class _CloudLayer extends StatelessWidget {
+  final List<_CloudData> clouds;
+  final List<Animation<double>> animations;
+
+  const _CloudLayer({required this.clouds, required this.animations});
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: Listenable.merge(animations),
+      builder: (_, __) {
+        return CustomPaint(
+          painter: _CloudPainter(
+            clouds: clouds,
+            progresses: animations.map((a) => a.value).toList(),
+          ),
+          size: Size.infinite,
+        );
+      },
+    );
+  }
+}
+
+class _CloudPainter extends CustomPainter {
+  final List<_CloudData> clouds;
+  final List<double> progresses;
+
+  _CloudPainter({required this.clouds, required this.progresses});
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    for (int i = 0; i < clouds.length; i++) {
+      final cloud = clouds[i];
+      final progress = progresses[i];
+      final left = progress * (size.width + cloud.width + 100) - cloud.width;
+      final top = size.height * cloud.top;
+
+      final paint = Paint()
+        ..color = Color.fromRGBO(255, 255, 255, cloud.opacity);
+
+      final rect = RRect.fromRectAndRadius(
+        Rect.fromLTWH(left, top, cloud.width, cloud.height),
+        Radius.circular(cloud.height / 2),
+      );
+      canvas.drawRRect(rect, paint);
+    }
+  }
+
+  @override
+  bool shouldRepaint(_CloudPainter old) => true;
 }
